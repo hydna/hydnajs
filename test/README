@@ -1,0 +1,4 @@
+
+
+In order to run this test suite, you need to run a wink and behavior -compatible server to run with it. The behaviors that needs to be loaded is located in the `test/behavior` directory.
+

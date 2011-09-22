@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>test-wsbin-1000-messages</title>
+    <script type="text/javascript" src="../lib/core.js"></script>
+    <script type="text/javascript" src="common.js"></script>
+  </head>
+  <body>
+    <h1>test-wsbin-1000-messages</h1>
+    <script>
+
+      function test(C) {
+        var messages = 150;
+        var payload = createPayload(512);
+        var chan = createTestChannel("rw");
+        var done = false;
+        var count = 0;
+
+        chan.onopen = function(e) {
+          for (var i = 0; i < messages; i++) {
+            chan.send(payload);
+          }
+        };
+
+        chan.onmessage = function(e) {
+          if (compareBuffers(payload, e.data) == false) {
+            done = true;
+            return C(new Error("diff error"));
+          } else {
+            if (++count == messages) {
+              chan.close();
+            }
+          }
+        };
+
+        chan.onerror = function(err) {
+          done = true;
+          C(err);
+        };
+
+        chan.onclose = function() {console.log("close"); C(); };
+      }
+
+      initTest(5000, test);
+    </script>
+  </body>
+</html>

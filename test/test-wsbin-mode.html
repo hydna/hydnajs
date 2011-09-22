@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>test-wsbin-mode</title>
+    <script type="text/javascript" src="../src/core.js"></script>
+    <script type="text/javascript" src="common.js"></script>
+  </head>
+  <body>
+    <h1>test-wsbin-mode</h1>
+    <script>
+
+      function test(C) {
+        var didthrow = false;
+
+        try {
+          createTestChannel("readwrite-signal");
+        } catch (err) {
+          didthrow = true;
+        }
+
+        if (!didthrow) return C("did not throw");
+
+        didthrow = false;
+
+        try {
+          createTestChannel("not vaild");
+        } catch (err) {
+          didthrow = true;
+        }
+
+        if (!didthrow) return C("did not throw");
+
+        try {
+          createTestChannel(null).close();
+          createTestChannel("r").close();
+          createTestChannel("r+e").close();
+          createTestChannel("r+emit").close();
+          createTestChannel("read").close();
+          createTestChannel("read+e").close();
+          createTestChannel("read+emit").close();
+          createTestChannel("w").close();
+          createTestChannel("w+e").close();
+          createTestChannel("w+emit").close();
+          createTestChannel("write").close();
+          createTestChannel("write+e").close();
+          createTestChannel("write+emit").close();
+          createTestChannel("rw").close();
+          createTestChannel("rw+e").close();
+          createTestChannel("rw+emit").close();
+          createTestChannel("readwrite").close();
+          createTestChannel("readwrite+e").close();
+          createTestChannel("readwrite+emit").close();
+        } catch (err) {
+          return C(err.message);
+        }
+
+        return C();
+      }
+
+      initTest(1100, test);
+    </script>
+  </body>
+</html>

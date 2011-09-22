@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>test-wsbin-pending-open</title>
+    <script type="text/javascript" src="common.js"></script>
+  </head>
+  <body>
+    <h1>test-wsbin-pending-open</h1>
+    <script>
+
+      function test(C) {
+        setTimeout(function() {
+          C("connection error");
+        }, 1000);
+      }
+
+      initTest(1100, test);
+    </script>
+  </body>
+</html>
