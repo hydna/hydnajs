@@ -81,7 +81,6 @@ package {
 
 
     public function send(id:int, data:String) : void {
-      trace("inside send!");
       var conn:Connection = getConnection(id);
       var frame:ByteArray = new ByteArray();
       var payload:ByteArray = null;
@@ -89,7 +88,6 @@ package {
       var head:ByteArray;
       var ch:Number;
       var desc:Number;
-      trace("send: declaration");
 
       if (conn == null) {
         return;
@@ -107,16 +105,11 @@ package {
         return
       }
 
-      trace("data: " + data);
-      trace("datalen: " + data.length);
-
       head = Base64.decode(data.substr(0, 8));
+      head.position = 0;
 
       ch = head.readUnsignedInt();
       desc= head.readByte();
-
-      trace("ch: " + ch);
-      trace ("desc: " + desc);
 
       if (data.length > 8) {
         payload = Base64.decode(data.substr(8));
@@ -132,14 +125,11 @@ package {
       }
 
       conn.send(frame);
-      trace("leaving send!");
     }
 
 
     public function init(id:int, url:String) : Boolean {
       var conn:Connection;
-
-      trace("-- create connection --");
 
       if (_connections == null) {
         _connections = new Dictionary();

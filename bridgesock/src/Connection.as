@@ -44,7 +44,6 @@ package {
 
 
     public function send(frame:ByteArray) : void {
-      trace( "Rawsocket -> sending data: " + frame.length );
       this.writeBytes(frame);
       this.flush();
     }
@@ -66,7 +65,7 @@ package {
       packet[2] = "Upgrade: winksock/1";
       packet[3] = "Host: " + _url.host;
       packet[4] = "X-Accept-Redirects: " + (_followRedirects ? "yes" : "no");
-      packet[5] = "";
+      packet[5] = "\r\n";
 
       this.writeMultiByte(packet.join("\r\n"), "us-ascii");
     }
@@ -96,7 +95,7 @@ package {
         return;
       }
 
-      head = splitted[0];
+      head = splitted[0].split("\r\n");
       body = splitted[1];
 
       this.removeEventListener( ProgressEvent.SOCKET_DATA, handshakeHandler );
@@ -148,11 +147,8 @@ package {
       var frame:ByteArray;
       var size:uint;
 
-      trace("RawSocket -> receiving...");
-
       readBytes(buffer, buffer.length, bytesAvailable);
 
-      trace("enter while looop");
       while (buffer.bytesAvailable >= 0x7) {
         size = buffer.readUnsignedShort();
 

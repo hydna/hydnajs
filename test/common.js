@@ -16,7 +16,7 @@ function initTest(timeout, test) {
 
   status = document.createElement("span");
   status.className = "status";
-  status.innerText = "running";
+  status.innerHTML = "running";
   status.style.fontSize = "0.7em";
   status.style.paddingLeft = "15px"
   h1.appendChild(status);
@@ -34,9 +34,9 @@ function initTest(timeout, test) {
   function printresult(err) {
     if (err) {
       err = err.message || err;
-      status.innerText = "failed: " + err;
+      status.innerHTML = "failed: " + err;
     } else {
-      status.innerText = "success (" + (time / 1000 )+ "s)";
+      status.innerHTML = "success (" + (time / 1000 )+ "s)";
     }
   }
 
@@ -92,7 +92,8 @@ function compareBuffers(a, b) {
     return false;
   }
 
-  if (typeof Uint8Array !== "undefined" && a instanceof Uint8Array) {
+  if (typeof Uint8Array !== "undefined" &&
+      b instanceof Uint8Array == false) {
     b = new Uint8Array(b.buffer || b);
   }
 
