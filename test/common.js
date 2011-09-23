@@ -92,6 +92,10 @@ function compareBuffers(a, b) {
     return false;
   }
 
+  if (typeof Uint8Array !== "undefined" && a instanceof Uint8Array) {
+    b = new Uint8Array(b.buffer || b);
+  }
+
   while (lena--) {
     if (a[lena] != b[lena]) {
       return false;
