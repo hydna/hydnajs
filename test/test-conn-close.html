@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>test-conn-close</title>
+    <script type="text/javascript" src="../lib/core.js"></script>
+    <script type="text/javascript" src="common.js"></script>
+  </head>
+  <body>
+    <h1>test-conn-close</h1>
+    <script>
+      function test(C) {
+        function partone() {
+          var chan;
+          var errorraised;
+          chan = createTestChannel("rw");
+          chan.onopen = function() {
+            this._connection.destroy(new Error("Test Error"));
+          };
+          chan.onerror = function(exception) {
+            if (exception.message != "Test Error") return C(new Error("not equal"));
+            errorraised = true;
+          };
+          chan.onclose = function() {
+            if (!errorraised) return C(new Error("Error not raised"));
+            if (this._connection !== null) return C(new Error("connection not null"));
+            setTimeout(parttwo, 0);
+          };
+        }
+
+        function parttwo() {
+          var chan;
+          var errorraised;
+          chan = createTestChannel("rw");
+          chan.onopen = function() {
+            chan._connection.sock.close();
+          };
+          chan.onerror = function(exception) {
+            if (/Connection\sreseted/.test(exception.message) == false) 
+              return C(new Error("not equal", exception.message));
+            errorraised = true;
+          };
+          chan.onclose = function() {
+            if (!errorraised) return C(new Error("Error not raised"));
+            if (this._connection !== null) return C(new Error("connection not null"));
+            return C();
+          };
+        }
+
+        setTimeout(partone, 0);
+      }
+
+      initTest(5000, test);
+    </script>
+  </body>
+</html>

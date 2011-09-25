@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>test-read-write-only</title>
+    <script type="text/javascript" src="../lib/core.js"></script>
+    <script type="text/javascript" src="common.js"></script>
+  </head>
+  <body>
+    <h1>test-read-write-only</h1>
+    <script>
+
+      function test(C) {
+        var chan;
+        var payload;
+
+        payload = createPayload(100);
+
+        function partone() {
+          var didthrow;
+          chan = createTestChannel("r");
+          try {
+            chan.write(payload);
+          } catch (e) {
+            didthrow = true;
+          }
+          if (!didthrow) return C(new Error("did not throw"));
+          chan.onopen = function() {
+            if (!this.readable) return C(new Error("not readable"));
+            if (this.writable) return C(new Error("writable"));
+            chan.close();
+          };
+          chan.onclose = function() {
+            setTimeout(parttwo, 0);
+          };
+        }
+
+        function parttwo() {
+          chan = createTestChannel("w");
+          chan.onopen = function() {
+            if (this.readable) return C(new Error("not readable"));
+            if (!this.writable) return C(new Error("writable"));
+          };
+          chan.onmessage = function() {
+            return C(new Error("Should not populate data"));
+          };
+          chan.onclose = function() {
+            return C();
+          };
+          setTimeout(function() {
+            chan.close();
+          }, 200);
+        }
+
+        setTimeout(partone, 0);
+      }
+
+      initTest(5000, test);
+    </script>
+  </body>
+</html>

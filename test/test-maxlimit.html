@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>test-maxlimit</title>
+    <script type="text/javascript" src="../lib/core.js"></script>
+    <script type="text/javascript" src="common.js"></script>
+  </head>
+  <body>
+    <h1>test-maxlimit</h1>
+    <script>
+
+      function test(C) {
+        var payload;
+        var chan;
+
+        payload = createPayload(10241);
+        chan = createTestChannel("rw");
+        
+        chan.onopen = function() {
+          var didthrow;
+          try {
+            chan.send(payload);
+          } catch (err) {
+            didthrow = true;
+          }
+          chan.close();
+          if (!didthrow) {
+            return C(new Error("did not throw"));
+          }
+          chan.onclose = C;
+        };
+      }
+
+      initTest(1000, test);
+    </script>
+  </body>
+</html>

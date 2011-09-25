@@ -21,22 +21,22 @@ function initTest(timeout, test) {
   status.style.paddingLeft = "15px"
   h1.appendChild(status);
 
-  function checkcallback(err) {
+  function checkcallback(err, result) {
     if (!docallback) return;
     if (err) {
       err = err.message || err;
       window.parent.location.href = baseuri + "fail:" + err;
     } else {
-      window.parent.location.href = baseuri + "done";
+      window.parent.location.href = baseuri + "done:" + result;
     }
   }
 
-  function printresult(err) {
+  function printresult(err, result) {
     if (err) {
       err = err.message || err;
       status.innerHTML = "failed: " + err;
     } else {
-      status.innerHTML = "success (" + (time / 1000 )+ "s)";
+      status.innerHTML = "success (" + result + ")";
     }
   }
 
@@ -48,11 +48,13 @@ function initTest(timeout, test) {
   }, timeout);
 
   test(function(err) {
+    var result;
     if (done) return;
     time = (new Date()).getTime() - time;
+    result = (time / 1000 ) + "s";
     done = true;
-    checkcallback(err);
-    printresult(err);
+    checkcallback(err, result);
+    printresult(err, result);
   });
 }
 

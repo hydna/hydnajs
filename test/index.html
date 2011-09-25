@@ -7,14 +7,14 @@
         "WebSocket Binary Tests", "wsbin"
       ];
       var TESTS = [
-        "1000-messages",
-        "conn-close",
-        "connect-close",
-        "maxlimit",
-        "mode",
-        "pending-open",
-        "read-write-only",
-        "signal",
+        "test-1000-messages",
+        "test-conn-close",
+        "test-connect-close",
+        "test-maxlimit",
+        "test-mode",
+        "test-pending-open",
+        "test-read-write-only",
+        "test-signal",
       ];
       var running = false;
 
@@ -46,6 +46,7 @@
               current.innerHTML += " (" + err + ")";
             } else {
               current.className += " success";
+              current.innerHTML += " (" + result + ")";
             }
           }
           current = tests.shift();
@@ -79,7 +80,7 @@
             if (m[1].substr(0, 5) == "fail:") {
               C(m[1].substr(5));
             } else {
-              C(null);
+              C(null, m[1].substr(5));
             }
           } else {
             setTimeout(poll, 500);
@@ -142,7 +143,8 @@
         ul = tmpl.childNodes[0];
         form.parentNode.appendChild(ul);
         for (var i2 = 0; i2 < TESTS.length; i2++) {
-          id = "test-" + prefix + "-" + TESTS[i2];
+          //"test-" + prefix + "-" + 
+          id = TESTS[i2];
           tmpl.innerHTML = '<li class="test" id="' + id + '">' +
                            '<input name="' + id + '-chk" type="checkbox" checked>' +
                            '<label for="' + id + '-chk">' + id + '</label>' +
