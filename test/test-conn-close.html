@@ -18,7 +18,9 @@
             this._connection.destroy(new Error("Test Error"));
           };
           chan.onerror = function(exception) {
-            if (exception.message != "Test Error") return C(new Error("not equal"));
+            if (exception.message != "Test Error") {
+              return C(new Error("not equal (" + exception.message + ")"));
+            }
             errorraised = true;
           };
           chan.onclose = function() {
