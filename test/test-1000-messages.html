@@ -39,7 +39,7 @@
           C(err);
         };
 
-        chan.onclose = function() {console.log("close"); C(); };
+        chan.onclose = function() { C(); };
       }
 
       initTest(5000, test);
