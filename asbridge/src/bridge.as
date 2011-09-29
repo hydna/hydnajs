@@ -5,16 +5,13 @@ package {
   import flash.events.*;
   import flash.errors.*;
   import flash.utils.*;
-  import flash.text.TextField;
   import flash.external.ExternalInterface;
   import flash.utils.*;
   import flash.system.Security;
 
-  [SWF( backgroundColor='0xFFFFFF', frameRate='30', width='500', height='500')]
+  [SWF( frameRate='60', width='1', height='1')]
 
   public class bridge extends Sprite {
-
-    private var _output:TextField;
 
     private var _externalHandshake:String;
     private var _externalReady:String;
@@ -40,22 +37,11 @@ package {
       _externalClose = vars.onclose;
       _externalError = vars.onerror;
 
-      _output = new TextField();
-      _output.width = 500;
-      _output.height = 500;
-      _output.text = "ExternalInterface.available: " + ExternalInterface.available.toString();
-      addChild( _output );
-
-      for (var i:String in vars){
-        _output.appendText( "\n"+ i +":" + vars[i]);
-      }
-
       if (ExternalInterface.available) {
         try{
           ExternalInterface.addCallback("send", this.send );
           ExternalInterface.addCallback("init", this.init );
           ExternalInterface.addCallback("close", this.close );
-          trace( "main -> created callbacks" );
         }catch(e:Error){
           trace("main -> failed creating callbacks: " + e.message );
         }
@@ -82,12 +68,7 @@ package {
 
     public function send(id:int, data:String) : void {
       var conn:Connection = getConnection(id);
-      var frame:ByteArray = new ByteArray();
-      var payload:ByteArray = null;
-      var payloadlen:Number = 0;
-      var head:ByteArray;
-      var ch:Number;
-      var desc:Number;
+      var frame:ByteArray;
 
       if (conn == null) {
         return;
@@ -102,29 +83,27 @@ package {
         } catch (e:Error) {
           trace("ExternalInterface communcation problem");
         }
-        return
+        return;
       }
 
-      head = Base64.decode(data.substr(0, 8));
-      head.position = 0;
-
-      ch = head.readUnsignedInt();
-      desc= head.readByte();
-
-      if (data.length > 8) {
-        payload = Base64.decode(data.substr(8));
-        payloadlen = payload.length;
+      try {
+        frame = Base64.decode(data);
+      } catch (e:Error) {
+        try {
+          ExternalInterface.call(_externalError,
+                                 conn.id,
+                                 "ERR_BAD_DATA");
+        } catch (e:Error) {
+          trace("ExternalInterface communcation problem");
+        }
+        return;
       }
 
-      frame.writeShort( 0x07 + payloadlen );
-      frame.writeUnsignedInt(ch);
-      frame.writeByte(desc);
+      frame.position = 0;
 
-      if (payloadlen > 0) {
-        frame.writeBytes(payload, 0, payloadlen);
-      }
-
-      conn.send(frame);
+      conn.writeShort(2 + frame.length);
+      conn.writeBytes(frame);
+      conn.flush();
     }
 
 
@@ -190,8 +169,6 @@ package {
 
       switch (e.status) {
         case 101:
-          trace( "main -> we are openfor business on: "+ target.id);
-          _output.appendText( "\nwe are openfor business on: "+ target.id);
           try {
             ExternalInterface.call(_externalOpen, target.id);
           } catch (e:Error) {
@@ -271,7 +248,7 @@ package {
       try {
         ExternalInterface.call(_externalError,
                                target.id,
-                               "ERR_BRIDGE: " + (e.text || "Unknown Error"));
+                               (e.text || "UNKNOWN_ERROR"));
       } catch (e:Error) {
         trace("ExternalInterface communcation problem");
       }
@@ -286,7 +263,7 @@ package {
       try {
         ExternalInterface.call(_externalError,
                                target.id,
-                               "ERR_BRIDGE: " + (e.text || ""));
+                               (e.text || "SECURITY_ERROR"));
       } catch (e:Error) {
         trace("ExternalInterface communcation problem");
       }
@@ -309,21 +286,12 @@ package {
 
 
     private function frameHandler(e:FrameEvent) : void {
-      var tmp:ByteArray;
-      var frame:String;
+      var str:String;
 
-      tmp = new ByteArray();
-      e.frame.readBytes(tmp, 0, 5);
-      frame = Base64.encode(tmp);
-
-      if (e.frame.bytesAvailable) {
-        tmp = new ByteArray();
-        e.frame.readBytes(tmp);
-        frame += Base64.encode(tmp);
-      }
+      str = Base64.encode(e.frame);
 
       try {
-        ExternalInterface.call(_externalMessage, e.target.id, frame);
+        ExternalInterface.call(_externalMessage, e.target.id, str);
       } catch(e:Error) {
         trace( "main -> problem with 'handleFrame' func." );
       }

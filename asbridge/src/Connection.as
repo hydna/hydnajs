@@ -34,8 +34,6 @@ package {
       _attempt = attempt;
       _handshakeBuffer = "";
 
-      trace("Handshake host: " + url.host + " port: " + url.port);
-
       this.addEventListener(Event.CONNECT, connectHandler);
       this.addEventListener(ProgressEvent.SOCKET_DATA, handshakeHandler);
 
@@ -53,7 +51,6 @@ package {
       var packet:Array = new Array();
       var token:String;
 
-      trace("Rawsocket -> connected");
       this.removeEventListener(Event.CONNECT, connectHandler);
 
       // TODO: Initialize a handshake timeout handler
@@ -99,8 +96,6 @@ package {
       body = splitted[1];
 
       this.removeEventListener( ProgressEvent.SOCKET_DATA, handshakeHandler );
-
-      trace( "Rawsocket -> complete handshake message" );
 
       m = /HTTP\/1\.1\s(\d+)/.exec(head[0]);
 
