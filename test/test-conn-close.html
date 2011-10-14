@@ -38,7 +38,7 @@
             chan._connection.sock.close();
           };
           chan.onerror = function(exception) {
-            if (/Connection\sreseted/.test(exception.message) == false) 
+            if (/Connection\sreseted/.test(exception.message) == false)
               return C(new Error("not equal", exception.message));
             errorraised = true;
           };
@@ -52,7 +52,7 @@
         setTimeout(partone, 0);
       }
 
-      initTest(5000, test);
+      initTest(30000, test);
     </script>
   </body>
 </html>

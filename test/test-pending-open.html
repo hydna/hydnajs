@@ -2,20 +2,33 @@
 <html>
   <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>test-wsbin-pending-open</title>
+    <title>test-pending-open</title>
+    <script type="text/javascript" src="../lib/core.js"></script>
     <script type="text/javascript" src="common.js"></script>
   </head>
   <body>
-    <h1>test-wsbin-pending-open</h1>
+    <h1>test-pending-open</h1>
     <script>
-
       function test(C) {
-        setTimeout(function() {
-          C("connection error");
-        }, 1000);
+        var requests = 10;
+        var count = 0;
+        var chan;
+
+        function onopen() {
+          console.log("count %s", count);
+          if (++count == requests) {
+            console.log("call callback");
+            return C();
+          }
+        }
+
+        for (var i = 0; i < requests; i++) {
+          chan = createTestChannel("rw", 1);
+          chan.onopen = onopen;
+        }
       }
 
-      initTest(1100, test);
+      initTest(30000, test);
     </script>
   </body>
 </html>

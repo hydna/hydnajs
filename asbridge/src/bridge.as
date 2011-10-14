@@ -5,13 +5,16 @@ package {
   import flash.events.*;
   import flash.errors.*;
   import flash.utils.*;
+  import flash.text.TextField;
   import flash.external.ExternalInterface;
   import flash.utils.*;
   import flash.system.Security;
 
-  [SWF( frameRate='60', width='1', height='1')]
+  [SWF( backgroundColor='0xaaaaaa', frameRate='60', width='500', height='800')]
 
   public class bridge extends Sprite {
+
+    private var _output:TextField;
 
     private var _externalHandshake:String;
     private var _externalReady:String;
@@ -21,14 +24,22 @@ package {
     private var _externalError:String;
 
     private var _connections:Dictionary;
-
+    private var _userAgent:String;
 
     function bridge(){
       var vars:Object;
 
       Security.allowDomain("*");
 
+      _userAgent = null;
+
       vars = LoaderInfo(this.root.loaderInfo).parameters;
+
+      _output = new TextField();
+      _output.width = 500;
+      _output.height = 800;
+      _output.text = "ExternalInterface.available: " + ExternalInterface.available.toString();
+      addChild( _output );
 
       _externalHandshake = vars.onhandshake;
       _externalReady = vars.onready;
@@ -45,7 +56,6 @@ package {
         }catch(e:Error){
           trace("main -> failed creating callbacks: " + e.message );
         }
-
         handshake();
       }
     }
@@ -118,7 +128,9 @@ package {
         return false;
       }
 
-      conn = new Connection(id);
+      _output.appendText("\nHandshake url: " + url);
+
+      conn = new Connection(id, _userAgent);
       alloc(conn);
 
       conn.handshake(url);
@@ -214,6 +226,7 @@ package {
 
 
           target = new Connection(target.id,
+                                  target.userAgent,
                                   target.followRedirects,
                                   target.attempt + 1);
 
@@ -299,23 +312,30 @@ package {
 
 
     private function handshake() : Boolean {
-      var ready:Boolean = false;
+
+      _output.appendText( "\n TRY to call handshake: " + _externalHandshake);
 
       try {
-        ready = ExternalInterface.call(_externalHandshake);
+        _userAgent = ExternalInterface.call(_externalHandshake);
+        _output.appendText( "\n Answer was: " + _userAgent);
       } catch(e:Error) {
+        _output.appendText( "\n ERROR!!");
         return false;
       }
 
-      if (!ready) {
-        setTimeout(this.handshake, 10);
+      if (!_userAgent) {
+        setTimeout(this.handshake, 1000);
+        return false;
       }
 
       try {
+        _output.appendText( "\n call externa ready ");
         ExternalInterface.call(_externalReady);
       } catch(e:Error) {
+        _output.appendText( "\n error ");
         trace( "main -> problem with 'handshake' func." );
       }
+      _output.appendText( "\n all ready ");
 
       return true;
     }

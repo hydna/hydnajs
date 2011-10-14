@@ -1,5 +1,5 @@
 
-TEST_HOST     = "localhost:7010";
+TEST_HOST     = "192.168.0.17:7010";
 TEST_CH       = TEST_HOST + "/x112233";
 
 
@@ -60,9 +60,18 @@ function initTest(timeout, test) {
 
 
 function createTestChannel(mode, ignoreErrors) {
-  var chan = new HydnaChannel(TEST_CH, mode);
+  var url = TEST_CH;
+  var chan;
+
+  if (typeof ignoreErrors == "number") {
+    url = TEST_HOST + "/" + ignoreErrors;
+    ignoreErrors = false;
+  }
+
+  chan = new HydnaChannel(url, mode);
+
   if (ignoreErrors) {
-    chan.on("error", function() { });
+    chan.on("error", function(err) { console.log("err %s", err) });
   }
   return chan;
 }
@@ -87,8 +96,8 @@ function createPayload(size) {
 
 
 function compareBuffers(a, b) {
-  var lena = a.length || a.byteLength;
-  var lenb = b.length || b.byteLength;
+  var lena = a && (a.length || a.byteLength);
+  var lenb = b && (b.length || b.byteLength);
 
   if (lena != lenb) {
     return false;

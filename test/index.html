@@ -4,7 +4,7 @@
     <title>Test suite</title>
     <script>
       var TRANSPORTS = [
-        "WebSocket Binary Tests", "wsbin"
+        "WebSocket Tests", "wsbin"
       ];
       var TESTS = [
         "test-1000-messages",
@@ -14,13 +14,22 @@
         "test-mode",
         "test-pending-open",
         "test-read-write-only",
-        "test-signal",
+        "test-signal"
       ];
       var running = false;
 
       function start() {
+        var self = this;
+
         if (running) return;
+
+        self.value = self.innerHTML = "Running...";
+        self.disabled = true;
+
         runall(function() {
+          self.value = self.innerHTML = "Start";
+          self.disabled = false;
+
           running = false;
         });
         return false;
@@ -50,8 +59,12 @@
             }
           }
           current = tests.shift();
-          return current ? runtest(current.getAttribute("id") + ".html", next)
-                         : C();
+          if (current) {
+            current.className += " running";
+            runtest(current.getAttribute("id") + ".html", next);
+          } else {
+            return C();
+          }
         })();
 
         return false;
@@ -102,6 +115,9 @@
         margin: 0;
         padding: 0;
       }
+      ul li.running {
+        background: yellow;
+      }
       ul li.success {
         background: lightgreen;
       }
@@ -142,8 +158,8 @@
                         '</li></ul>';
         ul = tmpl.childNodes[0];
         form.parentNode.appendChild(ul);
+
         for (var i2 = 0; i2 < TESTS.length; i2++) {
-          //"test-" + prefix + "-" + 
           id = TESTS[i2];
           tmpl.innerHTML = '<li class="test" id="' + id + '">' +
                            '<input name="' + id + '-chk" type="checkbox" checked>' +

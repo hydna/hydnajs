@@ -15,14 +15,17 @@ package {
 
     private var _receiveBuffer:ByteArray;
     private var _handshakeBuffer:String;
+    private var _userAgent:String;
 
 
     function Connection(id:Number,
+                        userAgent:String="Unknown",
                         followRedirects:Boolean=true,
                         attempt:Number=1) {
       super();
 
       _id = id;
+      _userAgent = userAgent;
       _followRedirects = followRedirects;
       _attempt = attempt;
     }
@@ -61,8 +64,10 @@ package {
       packet[1] = "Connection: Upgrade";
       packet[2] = "Upgrade: winksock/1";
       packet[3] = "Host: " + _url.host;
-      packet[4] = "X-Accept-Redirects: " + (_followRedirects ? "yes" : "no");
-      packet[5] = "\r\n";
+      packet[4] = "User-Agent: " + _userAgent;
+      packet[5] = "X-Accept-Redirects: " + (_followRedirects ? "yes" : "no");
+      packet[6] = "X-Wink-Transport: Flash";
+      packet[7] = "\r\n";
 
       this.writeMultiByte(packet.join("\r\n"), "us-ascii");
     }
@@ -173,6 +178,11 @@ package {
 
     public function get id() : Number {
       return _id;
+    }
+
+
+    public function get userAgent() : String {
+      return _userAgent;
     }
 
 
