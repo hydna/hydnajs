@@ -1,0 +1,65 @@
+#!/bin/sh
+
+BUILD_DIR=build
+LIB_DIR=`pwd`/lib
+BUILD_CFG=$BUILD_DIR/config.json
+NODE=`which node`
+UGLIFY=`which uglifyjs`
+VERSION=`cat VERSION`
+
+CUR_DIR=$PWD
+
+#possible relative path
+WORKINGDIR=`dirname $0`
+cd "$WORKINGDIR"
+#abs path
+WORKINGDIR=`pwd`
+cd "$CUR_DIR"
+
+echo "Searching for nodejs..."
+if [ ! -x $NODE ]
+  then
+    echo "Node.js is required in order to build"
+    exit 1
+fi
+
+echo "Searching for uglify-js..."
+if [ ! -x $UGLIFY ]
+	then
+    echo "Uglify-js is required in order to build. Install via 'npm install uglify-js"
+    exit 1
+fi
+
+FILES=()
+
+FILES+=(\"$LIB_DIR/globals.js\")
+FILES+=(\"$LIB_DIR/base64.js\")
+FILES+=(\"$LIB_DIR/nexttick.js\")
+FILES+=(\"$LIB_DIR/uri.js\")
+FILES+=(\"$LIB_DIR/encoding.js\")
+FILES+=(\"$LIB_DIR/detection.js\")
+FILES+=(\"$LIB_DIR/events.js\")
+FILES+=(\"$LIB_DIR/channel.js\")
+FILES+=(\"$LIB_DIR/request.js\")
+FILES+=(\"$LIB_DIR/connection.js\")
+FILES+=(\"$LIB_DIR/websocket.js\")
+FILES+=(\"$LIB_DIR/flash.js\")
+FILES+=(\"$LIB_DIR/comet.js\")
+
+BAR=""
+
+for index in ${!FILES[*]}
+do
+    BAR="$BAR,${FILES[$index]}"
+done
+
+mkdir -p $BUILD_DIR
+
+echo "{" > $BUILD_CFG
+echo \"version\": \"$VERSION\", >> $BUILD_CFG
+echo \"uglify\": \"$UGLIFY\", >> $BUILD_CFG
+echo \"workingdir\": \"$WORKINGDIR\", >> $BUILD_CFG
+echo \"files\":[${BAR:1}] >> $BUILD_CFG
+echo } >> $BUILD_CFG
+
+unset FILES

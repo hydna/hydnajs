@@ -18,6 +18,49 @@
       ];
       var running = false;
 
+
+      function hasWebSocketSupport() {
+        return (typeof WebSocket != "undefined") ||
+               (typeof MozWebSocket != "undefined") ||
+                false;
+      }
+
+      function hasFlashSupport() {
+        var nav = navigator;
+        var mkey = "application/x-shockwave-flash";
+        var ActiveX;
+        var mimes;
+        var major;
+        var plugin;
+
+        if (!nav) {
+          return false;
+        }
+
+        if (typeof nav.plugins != "undefined" &&
+            (plugin = nav.plugins["Shockwave Flash"]) &&
+            plugin.description &&
+            ((mime = nav.mimeTypes) && mime[mkey] && mime[mkey].enabledPlugin)) {
+          major = /\s(\d+)/.exec(plugin.description);
+          return major[1] && (parseInt(major[1]) > 9);
+        } else if ((ActiveX = window.ActiveXObject)) {
+          try {
+            if ((plugin = new ActiveX("ShockwaveFlash.ShockwaveFlash"))) {
+              major = /\s(\d+)/.exec(plugin.GetVariable("$version"));
+              return major[1] && (parseInt(major[1]) > 9);
+            }
+          } catch(e) {
+            return false;
+          }
+        }
+
+        return false;
+      }
+
+      function hasCometSupport() {
+        return typeof postMessage != "undefined";
+      }
+
       function start() {
         var self = this;
 
@@ -40,6 +83,7 @@
         var tags = document.getElementsByTagName("li");
         var tests = [];
         var current;
+        var href;
 
         for (var i = 0; i < tags.length; i++) {
           if (tags[i].className == "test" &&
@@ -61,7 +105,8 @@
           current = tests.shift();
           if (current) {
             current.className += " running";
-            runtest(current.getAttribute("id") + ".html", next);
+            href = current.getElementsByTagName("a")[0].getAttribute("href");
+            runtest(href, next);
           } else {
             return C();
           }
@@ -70,23 +115,36 @@
         return false;
       }
 
-      function runtest(src, C) {
+      function runtest(href, C) {
         var body = document.getElementsByTagName("body")[0];
-        var iframe = document.createElement("iframe");
+        var iframe;
         var index;
 
-        if ((index = window.location.href.indexOf("#"))) {
-          window.location = window.location.href.substr(0, index) + "#";
+        function embedframe() {
+          iframe = document.createElement("iframe");
+
+          iframe.style.width = "0";
+          iframe.style.height = "0";
+          iframe.src = href + "&callback=" + window.location.href;
+
+          body.appendChild(iframe);
+
+          window.k = iframe;
+
+          poll();
         }
 
-        iframe.style.width = "0";
-        iframe.style.height = "0";
-        iframe.src = src + "?" + window.location.href;
+        if ((index = window.location.href.indexOf("#"))) {
+          setTimeout(function() {
+            window.location = window.location.href.substr(0, index) + "#";
+            setTimeout(embedframe, 300);
+          }, 100);
+        } else {
+          setTimeout(embedframe, 300);
+        }
 
-        body.appendChild(iframe);
 
-        window.k = iframe;
-        (function poll() {
+        function poll() {
           var m = /\#(.+)$/.exec(window.location.href);
           if (m) {
             body.removeChild(iframe);
@@ -98,7 +156,7 @@
           } else {
             setTimeout(poll, 500);
           }
-        })();
+        }
       }
 
     </script>
@@ -134,6 +192,12 @@
     <div class="container">
       <form>
         <h1>Test Suite</h1>
+        <input id="test-websocket" name="test-websocket" type="checkbox" disabled>
+        <label for="test-websocket">Run WebSocket tests</label><br>
+        <input id="test-flash" name="test-flash" type="checkbox" disabled>
+        <label for="test-flash">Run Flash tests</label><br>
+        <input id="test-comet" name="test-comet" type="checkbox" disabled>
+        <label for="test-comet">Run Comet tests</label><br><br>
         <button id="start">Start</button>
       </form>
       <!-- <ul class="test">
@@ -143,32 +207,73 @@
     </div>
     <script>
       var form = document.getElementsByTagName("form")[0];
-      var tmpl = document.createElement("div");
-      var id;
-      var ul;
-      var li;
-      var title;
-      var prefix;
 
-      for (var i=0; i < TRANSPORTS.length; i+=2) {
-        title = TRANSPORTS[i];
-        prefix = TRANSPORTS[i + 1];
+      function createTestsFor(title, prefix, checkbox) {
+        var tmpl = document.createElement("div");
+        var name;
+        var id;
+        var ul;
+        var li;
+        var url;
+
         tmpl.innerHTML = '<ul class="test"><li>' +
                         '<h2>' + title + '</h2>' +
                         '</li></ul>';
+
         ul = tmpl.childNodes[0];
+
         form.parentNode.appendChild(ul);
 
         for (var i2 = 0; i2 < TESTS.length; i2++) {
-          id = TESTS[i2];
+          name = TESTS[i2];
+          id = prefix + "-" + name;
+          url = name + ".html?transport=" + prefix;
           tmpl.innerHTML = '<li class="test" id="' + id + '">' +
                            '<input name="' + id + '-chk" type="checkbox" checked>' +
-                           '<label for="' + id + '-chk">' + id + '</label>' +
+                           '<label for="' + id + '-chk"><a href="' + url + '">' +
+                           name + '</a></label>' +
                            '</li>'
           li = tmpl.childNodes[0];
           ul.appendChild(li);
         }
+
+        checkbox.onclick = function() {
+          var checked = checkbox.checked;
+          var li;
+          var input;
+          for (var i = 0, l = ul.childNodes.length; i < l; i++) {
+            li = ul.childNodes[i];
+            for (var i2 = 0, l2 = li.childNodes.length; i2 < l2; i2++) {
+              input = li.childNodes[i2];
+              if (input.tagName.toLowerCase() == "input") {
+                input.checked = checked;
+              }
+            }
+          }
+        };
+
       }
+
+      if (hasWebSocketSupport()) (function() {
+        var elem = document.getElementById("test-websocket");
+        elem.disabled = false;
+        elem.checked = true;
+        createTestsFor("WebSocket tests", "websocket", elem);
+      })();
+
+      if (hasFlashSupport()) (function() {
+        var elem = document.getElementById("test-flash");
+        elem.disabled = false;
+        elem.checked = true;
+        createTestsFor("FlashSocket tests", "flash", elem);
+      })();
+
+      if (hasCometSupport()) (function() {
+        var elem = document.getElementById("test-comet");
+        elem.disabled = false;
+        elem.checked = true;
+        createTestsFor("CometSocket tests", "comet", elem);
+      })();
 
       document.getElementById("start").onclick = start;
     </script>

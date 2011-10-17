@@ -1,11 +1,27 @@
 
 TEST_HOST     = "192.168.0.17:7010";
 TEST_CH       = TEST_HOST + "/x112233";
+CALLBACK_URL  = null;
+
+(function() {
+  var href = window.location.href;
+  var baseuri = window.location.href.split("?")[1];
+  var transport = null;
+
+  (baseuri = /callback=(.+)/.exec(href)) && (CALLBACK_URL = baseuri[1]);
+  (transport = /transport=(.+)&|transport=(.+)/.exec(href)) &&
+               transport && (transport[1] ? (transport = transport[1])
+                            : (transport = transport[2]));
+
+  if (transport) {
+    console.log("FORCE TRANSPORT %s", transport);
+    window.__FORCE_TRANSPORT_SOCKET__ = transport;
+  }
+})()
+
 
 
 function initTest(timeout, test) {
-  var baseuri = window.location.href.split("?")[1];
-  var docallback = baseuri && !(!baseuri.length);
   var done = false;
   var time = (new Date()).getTime();
   var h1;
@@ -13,6 +29,7 @@ function initTest(timeout, test) {
 
   h1 = document.getElementsByTagName("h1")[0] ||
        document.getElementsByTagName("body")[0];
+
 
   status = document.createElement("span");
   status.className = "status";
@@ -22,12 +39,12 @@ function initTest(timeout, test) {
   h1.appendChild(status);
 
   function checkcallback(err, result) {
-    if (!docallback) return;
+    if (!CALLBACK_URL) return;
     if (err) {
       err = err.message || err;
-      window.parent.location.href = baseuri + "fail:" + err;
+      window.parent.location.href = CALLBACK_URL + "fail:" + err;
     } else {
-      window.parent.location.href = baseuri + "done:" + result;
+      window.parent.location.href = CALLBACK_URL + "done:" + result;
     }
   }
 
