@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+var existsSync = require("path").existsSync;
+var readFileSync = require("fs").readFileSync;
+var confpath = process.argv[2];
+var target = process.argv[3];
+var config;
+var chunks;
+
+console.log("WinkJS builder");
+
+if (existsSync(confpath) == false) {
+  console.log("Config file not found at `%s`", confpath);
+  console.log("Run `configure` before `make`");
+  return process.exit(1);
+}
+
+console.log("Reading config from `%s`", confpath);
+config = require(confpath);
+
+chunks = config.files.map(function(path) { return readFileSync(path) + "\n"; });
+
+chunks.unshift("(function(global) {\n\n");
+chunks.push("\n\n})(typeof window == 'undefined' ? this : window);");
+
+function uglify() {
+  var spawn = require("child_process").spawn;
+  var uglify;
+  var args;
+  args = [config.uglify, "--output", target];
+  uglify = spawn(process.execPath, args);
+  uglify.stderr.on('data', function (data) { process.stderr.write(data); });
+  uglify.on("exit", function(code) { process.exit(code); });
+  uglify.stdin.write(chunks.join(""));
+  uglify.stdin.end();
+}
+
+function plain() {
+  var writeFileSync = require("fs").writeFileSync;
+  writeFileSync(target, chunks.join(""));
+}
+
+uglify();
