@@ -10,9 +10,12 @@ package {
   import flash.utils.*;
   import flash.system.Security;
 
-  [SWF( backgroundColor='0xaaaaaa', frameRate='60', width='500', height='800')]
+  /* When debugging, change to width=`500` and height=`800` */
 
+  [SWF( backgroundColor='0xffffff', frameRate='60', width='1', height='1')]
   public class bridge extends Sprite {
+
+    private static var DEBUG:Boolean = false;
 
     private var _output:TextField;
 
@@ -35,11 +38,7 @@ package {
 
       vars = LoaderInfo(this.root.loaderInfo).parameters;
 
-      _output = new TextField();
-      _output.width = 500;
-      _output.height = 800;
-      _output.text = "ExternalInterface.available: " + ExternalInterface.available.toString();
-      addChild( _output );
+      debug("EI available: " + ExternalInterface.available.toString());
 
       _externalHandshake = vars.onhandshake;
       _externalReady = vars.onready;
@@ -54,7 +53,8 @@ package {
           ExternalInterface.addCallback("init", this.init );
           ExternalInterface.addCallback("close", this.close );
         }catch(e:Error){
-          trace("main -> failed creating callbacks: " + e.message );
+          DEBUG && debug("Failed to initialize EI: " + e.message);
+          return;
         }
         handshake();
       }
@@ -91,7 +91,7 @@ package {
                                  conn.id,
                                  "ERR_BAD_DATA");
         } catch (e:Error) {
-          trace("ExternalInterface communcation problem");
+          DEBUG && debug("ExternalInterface error: " + e.message);
         }
         return;
       }
@@ -104,7 +104,7 @@ package {
                                  conn.id,
                                  "ERR_BAD_DATA");
         } catch (e:Error) {
-          trace("ExternalInterface communcation problem");
+          DEBUG && debug("ExternalInterface error: " + e.message);
         }
         return;
       }
@@ -128,7 +128,7 @@ package {
         return false;
       }
 
-      _output.appendText("\nHandshake url: " + url);
+      DEBUG && debug("Inititialize URL: " + url);
 
       conn = new Connection(id, _userAgent);
       alloc(conn);
@@ -184,7 +184,7 @@ package {
           try {
             ExternalInterface.call(_externalOpen, target.id);
           } catch (e:Error) {
-            trace("ExternalInterface communcation problem");
+            DEBUG && debug("ExternalInterface error: " + e.message);
           }
           break;
 
@@ -199,7 +199,7 @@ package {
                                      target.id,
                                      "Too many redirect attempts");
             } catch (e:Error) {
-              trace("ExternalInterface communcation problem");
+              DEBUG && debug("ExternalInterface error: " + e.message);
             }
             return;
           }
@@ -219,7 +219,7 @@ package {
                                      target.id,
                                      "Server sent bad redirect response");
             } catch (e:Error) {
-              trace("ExternalInterface communcation problem");
+              DEBUG && debug("ExternalInterface error: " + e.message);
             }
             return;
           }
@@ -246,7 +246,7 @@ package {
                                       (e.body || "Unknown Error")
                                       + ")");
           } catch (e:Error) {
-            trace("ExternalInterface communcation problem");
+            DEBUG && debug("ExternalInterface error: " + e.message);
           }
           break;
       }
@@ -263,7 +263,7 @@ package {
                                target.id,
                                (e.text || "UNKNOWN_ERROR"));
       } catch (e:Error) {
-        trace("ExternalInterface communcation problem");
+        DEBUG && debug("ExternalInterface error: " + e.message);
       }
     }
 
@@ -278,7 +278,7 @@ package {
                                target.id,
                                (e.text || "SECURITY_ERROR"));
       } catch (e:Error) {
-        trace("ExternalInterface communcation problem");
+        DEBUG && debug("ExternalInterface error: " + e.message);
       }
     }
 
@@ -293,7 +293,7 @@ package {
                                target.id,
                                "DISCONNECTED");
       } catch (e:Error) {
-        trace("ExternalInterface communcation problem");
+        DEBUG && debug("ExternalInterface error: " + e.message);
       }
     }
 
@@ -306,39 +306,57 @@ package {
       try {
         ExternalInterface.call(_externalMessage, e.target.id, str);
       } catch(e:Error) {
-        trace( "main -> problem with 'handleFrame' func." );
+        DEBUG && debug("ExternalInterface error: " + e.message);
       }
     }
 
 
     private function handshake() : Boolean {
 
-      _output.appendText( "\n TRY to call handshake: " + _externalHandshake);
+      DEBUG && debug("Try to handshake with client at: " + _externalHandshake);
 
       try {
         _userAgent = ExternalInterface.call(_externalHandshake);
-        _output.appendText( "\n Answer was: " + _userAgent);
+        DEBUG && debug("Handshake result: " + _userAgent);
       } catch(e:Error) {
-        _output.appendText( "\n ERROR!!");
+        DEBUG && debug("Handshake error: " + e.message);
         return false;
       }
 
       if (!_userAgent) {
-        setTimeout(this.handshake, 1000);
+        setTimeout(this.handshake, 10);
         return false;
       }
 
       try {
-        _output.appendText( "\n call externa ready ");
+        DEBUG && debug("Call ready with client at: " + _externalReady);
         ExternalInterface.call(_externalReady);
       } catch(e:Error) {
-        _output.appendText( "\n error ");
-        trace( "main -> problem with 'handshake' func." );
+        DEBUG && debug("Call ready error: " + e.message);
+        return false;
       }
-      _output.appendText( "\n all ready ");
+
+      DEBUG && debug("External Interface communication ready");
 
       return true;
     }
 
+    private function debug(text:String) : void {
+
+      if (DEBUG == false) {
+        return;
+      }
+
+      if (_output == null) {
+        _output = new TextField();
+        _output.width = 500;
+        _output.height = 800;
+        _output.text = "";
+        addChild(_output);
+      }
+
+      _output.appendText(text + "\n");
+      trace(text);
+    }
   }
 }
