@@ -16,19 +16,115 @@ cd "$WORKINGDIR"
 WORKINGDIR=`pwd`
 cd "$CUR_DIR"
 
-echo "Searching for nodejs..."
+OBJECT_NAME="WinkChannel"
+
+DISABLE_WS=false
+DISABLE_FLASH=false
+DISABLE_COMET=false
+
+COMET_PATH="/comet/"
+FLASH_PATH="bridge.swf"
+
+
+function usage()
+{
+echo "usage: $0 [options]"
+echo
+echo "This script configures the winkjs library."
+echo
+echo "Available options:"
+echo "  -h, --help              Show this message"
+echo "  -V, --version           Show package version"
+echo "      --environment=NAME  Configure for a specific environment"
+echo "      --comet-path=PATH   Sets path where comet requests should be sent, default '/comet/'"
+echo "      --flash-path=URL    Sets the flash url, defaults to 'bridge.swf'"
+echo "      --disable-comet     Removes all comet code from the output"
+echo "      --disable-flash     Removes all flash code from the output"
+echo "      --disable-ws        Removes all websocket code from the output"
+exit $1
+}
+
+
+function confenvironment()
+{
+case "$OPTARG" in
+  "hydna" )
+    echo "Configure for 'hydna' environment"
+    OBJECT_NAME="HydnaChannel"
+    COMET_PATH="/comet/"
+    FLASH_PATH="cdn.hydna.com/bridge.swf"
+   ;;
+  "test" )
+    echo "Configure for 'test' environment"
+    OBJECT_NAME="TestChannel"
+    FLASH_PATH="../dist/bridge.swf"
+   ;;
+  * ) 
+    echo "unknown environment '$OPTARG'"
+    exit -1
+esac
+}
+
+
+# translate long options to short
+# Note: This enable long options but disable "--?*" in $OPTARG, or disable long options after  "--" in option fields.
+for ((i=1;$#;i++)) ; do
+    case "$1" in
+        --) EndOpt=1 ;;
+        --disable-ws) ((EndOpt)) && args[$i]="$1"  || args[$i]="-W";;
+        --disable-flash) ((EndOpt)) && args[$i]="$1"  || args[$i]="-F";;
+        --disable-comet) ((EndOpt)) && args[$i]="$1"  || args[$i]="-C";;
+        --version) ((EndOpt)) && args[$i]="$1"  || args[$i]="-V";;
+        # default case : short option use the first char of the long option:
+        --?*) ((EndOpt)) && args[$i]="$1"  || args[$i]="-${1:2:1}";;
+        # pass through anything else:
+        *) args[$i]="$1" ;;
+    esac
+    shift
+done
+# reset the translated args
+set -- "${args[@]}"
+
+# now we can process with getopt
+while getopts ":hvVc:Cf:FWe:" opt; do
+    case $opt in
+        h)  usage ;;
+        v)  VERBOSE=true ;;
+        V)  echo $VERSION ; exit ;;
+        C)  DISABLE_COMET=true ;;
+        F)  DISABLE_FLASH=true ;;
+        W)  DISABLE_WS=true ;;
+        t)  TEST_SUITE=true ;;
+        c)  COMET_PATH=$OPTARG ;;
+        e)  confenvironment -1 ;;
+        \?) echo "unrecognized option: -$opt" ; usage -1 ;;
+        :)
+        echo "option -$OPTARG requires an argument"
+        usage -1
+        ;;
+    esac
+done
+
+shift $((OPTIND-1))
+[[ "$1" == "--" ]] && shift
+
+
 if [ ! -x $NODE ]
   then
     echo "Node.js is required in order to build"
     exit 1
+  else
+    echo "Node.js found at '$NODE'"
 fi
 
-echo "Searching for uglify-js..."
 if [ ! -x $UGLIFY ]
 	then
     echo "Uglify-js is required in order to build. Install via 'npm install uglify-js"
     exit 1
+  else
+    echo "Uglify-js found at '$UGLIFY'"
 fi
+
 
 FILES=()
 
@@ -37,14 +133,33 @@ FILES+=(\"$LIB_DIR/base64.js\")
 FILES+=(\"$LIB_DIR/nexttick.js\")
 FILES+=(\"$LIB_DIR/uri.js\")
 FILES+=(\"$LIB_DIR/encoding.js\")
+
+if $DISABLE_WS ; then
+  echo "Ignoring websocket transport files..."
+else
+  FILES+=(\"$LIB_DIR/websocket.js\")
+fi
+
+
+if $DISABLE_FLASH ; then
+  echo "Ignoring flash transport files..."
+else
+  FILES+=(\"$LIB_DIR/flash.js\")
+fi
+
+
+if $DISABLE_COMET ; then
+  echo "Ignoring comet transport files..."
+else
+  FILES+=(\"$LIB_DIR/comet.js\")
+fi
+
 FILES+=(\"$LIB_DIR/detection.js\")
 FILES+=(\"$LIB_DIR/events.js\")
 FILES+=(\"$LIB_DIR/channel.js\")
 FILES+=(\"$LIB_DIR/request.js\")
 FILES+=(\"$LIB_DIR/connection.js\")
-FILES+=(\"$LIB_DIR/websocket.js\")
-FILES+=(\"$LIB_DIR/flash.js\")
-FILES+=(\"$LIB_DIR/comet.js\")
+
 
 BAR=""
 
@@ -56,10 +171,18 @@ done
 mkdir -p $BUILD_DIR
 
 echo "{" > $BUILD_CFG
-echo \"version\": \"$VERSION\", >> $BUILD_CFG
+echo \"VERSION\": \"$VERSION\", >> $BUILD_CFG
 echo \"uglify\": \"$UGLIFY\", >> $BUILD_CFG
 echo \"workingdir\": \"$WORKINGDIR\", >> $BUILD_CFG
+echo \"OBJECT_NAME\": \"$OBJECT_NAME\", >> $BUILD_CFG
+echo \"COMET_PATH\": \"$COMET_PATH\", >> $BUILD_CFG
+echo \"FLASH_PATH\": \"$FLASH_PATH\", >> $BUILD_CFG
+echo \"DISABLE_WEBSOCKET\": $DISABLE_WS, >> $BUILD_CFG
+echo \"DISABLE_FLASH\": $DISABLE_FLASH, >> $BUILD_CFG
+echo \"DISABLE_COMET\": $DISABLE_COMET, >> $BUILD_CFG
 echo \"files\":[${BAR:1}] >> $BUILD_CFG
 echo } >> $BUILD_CFG
 
 unset FILES
+
+echo "Configuration was successful"

@@ -1,0 +1,24 @@
+
+
+Make a distribution
+-------------------
+
+First configure and make:
+
+  $ ./configure
+  $ make
+
+
+The needed files for distribution is located in `dist`.
+
+
+
+Running the test-suite
+----------------------
+
+In order to run the test suite, you need to run a wink and behavior -compatible server. The behaviors that needs to be loaded is located in the `test/behaviors` directory. 
+
+You also need to `configure` the library for testing:
+
+  $ ./configure --environment test
+  $ make

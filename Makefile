@@ -1,14 +1,21 @@
-DIST=`pwd`/dist
-CONFIG=`pwd`/build/config.json
+CURRENTDIR=$(PWD)
+DIST=$(PWD)/dist
+BUILD=$(PWD)/tools/build
+JS_TARGET=$(DIST)/lib.js
+CONFIG=$(PWD)/build/config.json
+ASBRIDGE=$(PWD)/asbridge
+ASBRIDGE_DIST=$(ASBRIDGE)/dist
 
-
-all: lib
+all: flash-bridge lib
 
 dist:
 	mkdir -p $(DIST)
 
 lib: dist
-	tools/build $(CONFIG) $(DIST)/lib.js
+	$(BUILD) $(CONFIG) $(JS_TARGET)
+
+flash-bridge: dist
+	make -C $(ASBRIDGE) -f Makefile
+	cp $(ASBRIDGE_DIST)/* $(DIST)
 	
-	
-.PHONY: lib
+.PHONY: lib flash-bridge
