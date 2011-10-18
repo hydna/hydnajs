@@ -2,10 +2,8 @@
 <html>
   <head>
     <title>Test suite</title>
+    <script type="text/javascript" src="../dist/lib.js"></script>
     <script>
-      var TRANSPORTS = [
-        "WebSocket Tests", "wsbin"
-      ];
       var TESTS = [
         "test-1000-messages",
         "test-conn-close",
@@ -16,50 +14,8 @@
         "test-read-write-only",
         "test-signal"
       ];
+
       var running = false;
-
-
-      function hasWebSocketSupport() {
-        return (typeof WebSocket != "undefined") ||
-               (typeof MozWebSocket != "undefined") ||
-                false;
-      }
-
-      function hasFlashSupport() {
-        var nav = navigator;
-        var mkey = "application/x-shockwave-flash";
-        var ActiveX;
-        var mimes;
-        var major;
-        var plugin;
-
-        if (!nav) {
-          return false;
-        }
-
-        if (typeof nav.plugins != "undefined" &&
-            (plugin = nav.plugins["Shockwave Flash"]) &&
-            plugin.description &&
-            ((mime = nav.mimeTypes) && mime[mkey] && mime[mkey].enabledPlugin)) {
-          major = /\s(\d+)/.exec(plugin.description);
-          return major[1] && (parseInt(major[1]) > 9);
-        } else if ((ActiveX = window.ActiveXObject)) {
-          try {
-            if ((plugin = new ActiveX("ShockwaveFlash.ShockwaveFlash"))) {
-              major = /\s(\d+)/.exec(plugin.GetVariable("$version"));
-              return major[1] && (parseInt(major[1]) > 9);
-            }
-          } catch(e) {
-            return false;
-          }
-        }
-
-        return false;
-      }
-
-      function hasCometSupport() {
-        return typeof postMessage != "undefined";
-      }
 
       function start() {
         var self = this;
@@ -123,8 +79,11 @@
         function embedframe() {
           iframe = document.createElement("iframe");
 
-          iframe.style.width = "0";
-          iframe.style.height = "0";
+          iframe.style.position = "absolute";
+          iframe.style.top = "0px";
+          iframe.style.left = "0px"
+          iframe.style.width = "40px";
+          iframe.style.height = "40px";
           iframe.src = href + "&callback=" + window.location.href;
 
           body.appendChild(iframe);
@@ -254,21 +213,21 @@
 
       }
 
-      if (hasWebSocketSupport()) (function() {
+      if (TestChannel.WEBSOCKET) (function() {
         var elem = document.getElementById("test-websocket");
         elem.disabled = false;
         elem.checked = true;
         createTestsFor("WebSocket tests", "websocket", elem);
       })();
 
-      if (hasFlashSupport()) (function() {
+      if (TestChannel.FLASH) (function() {
         var elem = document.getElementById("test-flash");
         elem.disabled = false;
         elem.checked = true;
         createTestsFor("FlashSocket tests", "flash", elem);
       })();
 
-      if (hasCometSupport()) (function() {
+      if (TestChannel.COMET) (function() {
         var elem = document.getElementById("test-comet");
         elem.disabled = false;
         elem.checked = true;

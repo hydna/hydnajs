@@ -14,9 +14,14 @@
         var payload;
         var chan;
 
-        payload = createPayload(10241);
+        payload = createPayload(500);
+        if (!TestChannel.sizeOf(payload) == 500) {
+          return C(new Error("SIZE_OF_ERR_" + TestChannel.sizeOf(payload)));
+        }
+
+        payload = createPayload(TestChannel.MAXSIZE + 1);
         chan = createTestChannel("rw");
-        
+
         chan.onopen = function() {
           var didthrow;
           try {
@@ -26,9 +31,11 @@
           }
           chan.close();
           if (!didthrow) {
-            return C(new Error("did not throw"));
+            return C(new Error("DID_NOT_THROW"));
           }
-          chan.onclose = C;
+          chan.onclose = function() {
+            return C();
+          };
         };
       }
 

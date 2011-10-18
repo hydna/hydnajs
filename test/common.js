@@ -14,7 +14,6 @@ CALLBACK_URL  = null;
                             : (transport = transport[2]));
 
   if (transport) {
-    console.log("FORCE TRANSPORT %s", transport);
     window.__FORCE_TRANSPORT_SOCKET__ = transport;
   }
 })()
@@ -85,7 +84,7 @@ function createTestChannel(mode, ignoreErrors) {
     ignoreErrors = false;
   }
 
-  chan = new HydnaChannel(url, mode);
+  chan = new TestChannel(url, mode);
 
   if (ignoreErrors) {
     chan.on("error", function(err) { console.log("err %s", err) });

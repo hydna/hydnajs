@@ -10,14 +10,13 @@
     <h1>test-pending-open</h1>
     <script>
       function test(C) {
+        var haderror = false;
         var requests = 10;
         var count = 0;
         var chan;
 
         function onopen() {
-          console.log("count %s", count);
-          if (++count == requests) {
-            console.log("call callback");
+          if (++count == requests && !haderror) {
             return C();
           }
         }
@@ -25,7 +24,10 @@
         for (var i = 0; i < requests; i++) {
           chan = createTestChannel("rw", 1);
           chan.onopen = onopen;
-          chan.onerror = function() { console.log("err") };
+          chan.onerror = function(err) {
+            haderror = true;
+            return !haderror && C(err);
+          };
         }
       }
 
