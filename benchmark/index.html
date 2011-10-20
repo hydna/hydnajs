@@ -3,6 +3,21 @@
   <head>
     <title>Benchmark</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script>
+      (function() {
+        var href = window.location.href;
+        var baseuri = window.location.href.split("?")[1];
+        var transport = null;
+
+        (transport = /transport=(.+)&|transport=(.+)/.exec(href)) &&
+                     transport && (transport[1] ? (transport = transport[1])
+                                  : (transport = transport[2]));
+
+        if (transport) {
+          window.__FORCE_TRANSPORT_SOCKET__ = transport;
+        }
+      })();
+    </script>
     <script type="text/javascript" src="../dist/lib.js"></script>
     <script>
       var ADDRESS_A = "localhost:7010/5";
@@ -70,7 +85,7 @@
           lastkey = key;
           setTimeout(function() {
             cases[key](next);
-          }, 400);
+          }, 1000);
         })();
       }
 
