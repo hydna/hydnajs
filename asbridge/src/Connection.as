@@ -72,9 +72,6 @@ package {
       this.writeMultiByte(packet.join("\r\n"), "us-ascii");
     }
 
-    public static const END: String = "\r\n\r\n";
-    private static const TOKEN_APPEND:String = "?t=";
-
 
     private function handshakeHandler(event:ProgressEvent) : void {
       var buffer:String;
