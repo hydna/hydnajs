@@ -66,7 +66,7 @@ package {
       packet[3] = "Host: " + _url.host;
       packet[4] = "User-Agent: " + _userAgent;
       packet[5] = "X-Accept-Redirects: " + (_followRedirects ? "yes" : "no");
-      packet[6] = "X-Wink-Transport: Flash";
+      packet[6] = "X-SubProtocol: Flash";
       packet[7] = "\r\n";
 
       this.writeMultiByte(packet.join("\r\n"), "us-ascii");
