@@ -64,4 +64,4 @@ function plain() {
   writeFileSync(target, chunks.join(""));
 }
 
-plain();
+uglify();
