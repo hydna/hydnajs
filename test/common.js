@@ -1,5 +1,5 @@
 
-TEST_HOST     = "192.168.0.17:7010";
+TEST_HOST     = "localhost:7010";
 TEST_CH       = TEST_HOST + "/x112233";
 CALLBACK_URL  = null;
 
