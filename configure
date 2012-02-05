@@ -52,7 +52,7 @@ case "$OPTARG" in
     echo "Configure for 'hydna' environment"
     OBJECT_NAME="HydnaChannel"
     COMET_PATH="/comet/"
-    FLASH_PATH="cdn.hydna.com/bridge.swf"
+    FLASH_PATH="http://cdn.hydna.com/bridge.swf"
    ;;
   "test" )
     echo "Configure for 'test' environment"
