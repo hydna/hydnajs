@@ -1,25 +1,38 @@
 #!/bin/bash
-API_USER="hydna"
-API_KEY="9804ed36bbfb01c226ad200a95e90dff"
+lib_path="dist/lib.js"
+bridge_path="dist/bridge.swf"
+version="1"
 
-FILE="dist/hydna.js"
+# don't edit below this line
 
-AUTH_SERVER="https://lon.auth.api.rackspacecloud.com/v1.0"
+if [ -z "$CDN_API_USER" ]; then
+    echo "You must set \$CDN_API_USER";
+    exit 1;
+fi
 
-DATA=`curl -s -f -D - \
-           -H "X-Auth-Key: $API_KEY" \
-           -H "X-Auth-User: $API_USER" \
-           $AUTH_SERVER`
-TOKEN=`echo "$DATA" | grep "X-Auth-Token:" | awk '{print $2}'`
-STORAGE=`echo "$DATA" | grep "X-Storage-Url:" | awk '{print $2}' | tr -d '\r'`
+if [ -z "$CDN_API_KEY" ]; then
+    echo "You must set \$CDN_API_KEY";
+    exit 1;
+fi
 
-# echo $TOKEN
-# echo $STORAGE
+function putfile() {
+    local path=$1
+    local filename=$2
+    local ctype=$3
 
-MD5=`md5sum $FILE | awk '{print $1}'`
-CTYPE="application/javascript"
-FILENAME=`basename $FILE`
+    local md5=`md5sum $path | awk '{print $1}'`
 
-curl -X PUT -T $FILE -H "ETag: $MD5" -H "Content-type: $CTYPE" -H "X-Auth-Token: $TOKEN" "$STORAGE/cdn/$FILENAME"
- 
-# curl -X PUT -T dist/hydna.js -H "Content-Type: application/javascript" -H "X-Auth-Token: $TOKEN" "https://storage.clouddrive.com/hydna.js"
+    curl -s -X PUT -T $path -H "ETag: $md5" -H "Content-type: $ctype" -H "X-Auth-Token: $token" "$storage/cdn/$version/$filename" > /dev/null
+}
+
+auth_server="https://lon.auth.api.rackspacecloud.com/v1.0"
+
+data=`curl -s -f -D - \
+           -H "X-Auth-Key: $CDN_API_KEY" \
+           -H "X-Auth-User: $CDN_API_USER" \
+           $auth_server`
+token=`echo "$data" | grep "X-Auth-Token:" | awk '{print $2}'`
+storage=`echo "$data" | grep "X-Storage-Url:" | awk '{print $2}' | tr -d '\r'`
+
+putfile $lib_path "hydna.js" "application/javascript"
+putfile $bridge_path "bridge.swf" "application/x-shockwave-flash"
