@@ -20,7 +20,7 @@ function putfile() {
     local filename=$2
     local ctype=$3
 
-    local md5=`md5sum $path | awk '{print $1}'`
+    local md5=`cat $path | md5`
 
     curl -s -X PUT -T $path -H "ETag: $md5" -H "Content-type: $ctype" -H "X-Auth-Token: $token" "$storage/cdn/$version/$filename" > /dev/null
 }
