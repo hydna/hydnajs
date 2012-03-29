@@ -57,6 +57,7 @@ case "$OPTARG" in
   "test" )
     echo "Configure for 'test' environment"
     OBJECT_NAME="TestChannel"
+    COMET_PATH="/comet/"
     FLASH_PATH="../dist/bridge.swf"
    ;;
   * ) 
