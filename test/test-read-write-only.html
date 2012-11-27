@@ -33,6 +33,9 @@
           chan.onclose = function() {
             setTimeout(parttwo, 0);
           };
+          chan.onerror = function(err) {
+            C(err);
+          };
         }
 
         function parttwo() {
@@ -46,6 +49,9 @@
           };
           chan.onclose = function() {
             return C();
+          };
+          chan.onerror = function(err) {
+            C(err);
           };
           setTimeout(function() {
             chan.close();

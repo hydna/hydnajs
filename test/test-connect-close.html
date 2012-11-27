@@ -12,11 +12,17 @@
 
       function test(C) {
         var chan = createTestChannel("rw");
+
         chan.onopen = function() {
           if (!this.readable) return C(new Error("not readable"));
           if (!this.writable) return C(new Error("not writable"));
           chan.close();
         };
+
+        chan.onerror = function(err) {
+          C(err);
+        };
+
         chan.onclose = function() {
           return C();
         };
