@@ -44,7 +44,6 @@
               sendqueue = null;
             }
           } else {
-            console.log("FLUSH_FAILED(%s)", this.responseText);
             destroy(getXHRError(this));
           }
         }
@@ -53,9 +52,9 @@
 
       function flush(queue) {
         outreq = createXHR();
-        req.open("POST", geturl("send"), true);
-        req.onreadystatechange = flushHandler;
-        req.send(queue.join("\n"));
+        outreq.open("POST", geturl("send"), true);
+        outreq.onreadystatechange = flushHandler;
+        outreq.send(queue.join("\n"));
       }
 
 
@@ -66,13 +65,12 @@
             sessionid = this.responseText;
             handshakedWithServer = true;
             dest.postMessage(winid + "\x01", origin);
+            serverReceiveLoop();
           } else {
-            console.log("HANDSHAKE_FAILED(%s)", this.responseText);
             destroy(getXHRError(this));
           }
         }
       }
-
 
       function serverReceive() {
         var messages;
@@ -122,16 +120,15 @@
         var domain;
         var q;
 
-        console.log("intercomHandshake", event.source == window);
-
-        if (!(origin = param("origin")) ||
-            origin !== event.origin) {
-          event.source.postMessage(winid + "\x02BAD_PARAMS", "*");
-          return destroy();
-        }
+        // if (!(origin = param("origin")) ||
+        //     origin !== event.origin) {
+        //   event.source.postMessage(winid + "\x02BAD_PARAMS", "*");
+        //   return destroy();
+        // }
+        origin = "*";
 
         winid = event.data.substr(0, 8);
-        token = event.data.length > 9 ? event.data.substr(9) : "";
+        token = event.data.length > 8 ? event.data.substr(8) : "";
 
         if (!(domain = param("domain"))) {
           event.source.postMessage(winid + "\x02BAD_PARAMS", "*");
@@ -139,8 +136,6 @@
         }
 
         serverurl = loc.protocol + "//" + loc.host + loc.pathname;
-
-        token = encodeURIComponent(event.data.substr(1));
 
         q = "?d=" + domain;
         token && (q += "&t=" + encodeURIComponent(token));
@@ -164,11 +159,9 @@
         var op = event.data.charCodeAt(0);
         var payload;
 
-        if (event.origin !== origin) {
-          return;
-        }
-
-console.log("intercomReceive");
+        // if (event.origin !== origin) {
+        //   return;
+        // }
 
         switch (op) {
 
@@ -191,6 +184,7 @@ console.log("intercomReceive");
               } else {
                 sendqueue.push(payload);
               }
+              return;
             }
 
             flush([payload]);
@@ -204,7 +198,6 @@ console.log("intercomReceive");
 
 
       function destroy(err) {
-
         if (outreq) {
           outreq.onreadystatechange = null;
           try { outreq.abort(); } catch (err) {}
@@ -218,8 +211,8 @@ console.log("intercomReceive");
         }
 
         if (intercomHandler) {
-          if ("attachEvent" in window) {
-            window.dettachEvent("onmessage", intercomHandler);
+          if ("detachEvent" in window) {
+            window.detachEvent("onmessage", intercomHandler);
           } else {
             window.removeEventListener("message", intercomHandler, false);
           }
