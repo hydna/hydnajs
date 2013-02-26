@@ -1,4 +1,3 @@
-
-
-In order to run this test suite, you need to run a wink and behavior -compatible server to run with it. The behaviors that needs to be loaded is located in the `test/behaviors` directory.
-
+In order to run this test suite, you must run a server that supports the wink
+protocol and has loaded a specific set of behaviors. The behaviors that should
+be loaded are located in the `test/behaviors` directory.

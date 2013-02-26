@@ -15,9 +15,11 @@
         var chan;
 
         chan = createTestChannel("rw+e");
+
         chan.onopen = function() {
           chan.emit("ping");
         };
+
         chan.onsignal = function(e) {
           var msg = e.message;
           if (msg !== "pong") {
@@ -26,6 +28,11 @@
             chan.close();
           }
         };
+
+        chan.onerror = function(err) {
+          C(err);
+        };
+
         chan.onclose = function() {
           return C();
         };
