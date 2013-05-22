@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var existsSync = require("path").existsSync;
+var existsSync = require("fs").existsSync;
 var readFileSync = require("fs").readFileSync;
 var confpath = process.argv[2];
 var target = process.argv[3];
