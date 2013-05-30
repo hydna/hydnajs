@@ -28,7 +28,7 @@
         };
 
         chan.onmessage = function(e) {
-          var payload = payloads.unshift();
+          var payload = payloads.shift();
           if (compareStrings(payload, e.data) == false) {
             done = true;
             return C(new Error("diff error"));
