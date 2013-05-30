@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>test-utf8</title>
+    <script type="text/javascript" src="common.js"></script>
+    <script type="text/javascript" src="../dist/lib.js"></script>
+  </head>
+  <body>
+    <h1>test-utf8</h1>
+
+    <script>
+      function test(C) {
+        var messages = 100;
+        var payloads = [];
+        var chan = createTestChannel("rw");
+        var done = false;
+        var count = 0;
+
+        for (var i = 0; i < messages; i++) {
+          payloads[i] = createString(512);
+        }
+        
+        chan.onopen = function(e) {
+          for (var i = 0; i < messages; i++) {
+            chan.send(payloads[i]);
+          }
+        };
+
+        chan.onmessage = function(e) {
+          var payload = payloads.unshift();
+          if (compareStrings(payload, e.data) == false) {
+            done = true;
+            return C(new Error("diff error"));
+          } else {
+            if (++count == messages) {
+              chan.close();
+            }
+          }
+        };
+
+        chan.onerror = function(err) {
+          done = true;
+          C(err);
+        };
+
+        chan.onclose = function() { C(); };
+      }
+
+      initTest(30000, test);
+    </script>
+  </body>
+</html>

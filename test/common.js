@@ -1,5 +1,5 @@
 
-TEST_HOST     = "localhost:7010";
+TEST_HOST     = "testing.hydna.net";
 TEST_CH       = TEST_HOST + "/x112233";
 CALLBACK_URL  = null;
 
@@ -111,6 +111,19 @@ function createPayload(size) {
 }
 
 
+function createString(size) {
+  var payload = "";
+  var code;
+
+  for (var i = 0; i < size; i++) {
+    code = ~~(Math.random() * 0xfff);
+    payload += String.fromCharCode(code);
+  }
+
+  return payload;
+}
+
+
 function compareBuffers(a, b) {
   var lena = a && (a.length || a.byteLength);
   var lenb = b && (b.length || b.byteLength);
@@ -133,3 +146,20 @@ function compareBuffers(a, b) {
   return true;
 }
 
+
+function compareStrings (a, b) {
+  var lena = a.length;
+  var lenb = b.length;
+
+  if (lena != lenb) {
+    return false;
+  }
+
+  while (lena--) {
+    if (a[lena] != b[lena]) {
+      return false;
+    }
+  }
+
+  return true;  
+}
