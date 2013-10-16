@@ -14,17 +14,6 @@ Add the following to the head-element of your HTML source:
 
     <script type="text/javascript" src="http://cdn.hydna.com/1/hydna.js"></script>
 
-## Generating a distribution
-
-You can skip this step if you're sourcing the script from the CDN.
-
-First configure, then make:
-
-    $ ./configure
-    $ make
-
-The files generated will be placed in `dist`.
-
 ## Usage
 
 Open a channel in read/write mode and attach event-handlers that
@@ -177,3 +166,37 @@ The following properties exist on instances of `HydnaChannel`:
 * `HydnaChannel.MAXSIZE` the maximum size of messages allowed (in bytes).
 * `HydnaChannel.sizeOf(data)` returns the size of `data` (String or binary
   array) in bytes.
+
+## Generating a distribution
+
+You can skip this step if you're sourcing the script from the CDN.
+
+### Requirements
+
+#### Apache Flex
+
+Installation on OS X:
+
+    brew install flex_sdk
+
+#### NodeJS
+
+Installation on OS X:
+
+    brew install nodejs
+
+#### UglifyJS (optional)
+
+Installation:
+
+    npm install -g uglifyjs
+
+### Building
+
+First configure, then make:
+
+    $ ./configure
+    $ make
+
+The files generated will be placed in `dist`.
+
