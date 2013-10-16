@@ -1,8 +1,8 @@
 # Hydna JavaScript client library
 
-A multi-transport Hydna client library that will automatically detect the best
-available transport for the connecting client. The following transports are
-supported:
+A multi-transport Hydna (http://www.hydna.com) client library that will
+automatically detect the best available transport for the connecting client.
+The following transports are supported:
 
 * WebSockets
 * Binary TCP using Flash fallback (if WebSockets are not available)
