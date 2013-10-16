@@ -115,12 +115,12 @@ Triggered when an error occurs. `event.data` contains optional error message.
 The following methods exist on instances of `HydnaChannel`: send, emit, and
 close.
 
-#### channel.send(message, priority=1)
+#### channel.send(message, priority=0)
 
 Transmit `message` -- which is a string or binary array -- over an
 open channel. A `priority` can be set to dictate how the server should treat
-the message during high-load situations. The value can be in the range 1-3 and
-defaults to `1` which is the highest priority.
+the message during high-load situations. The value can be in the range 0-7 and
+defaults to `0` which is the highest priority.
 
     channel.onopen = function(event) {
         channel.send('hello world!');
