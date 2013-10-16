@@ -1,3 +1,0 @@
-In order to run this test suite, you must run a server that supports the wink
-protocol and has loaded a specific set of behaviors. The behaviors that should
-be loaded are located in the `test/behaviors` directory.
