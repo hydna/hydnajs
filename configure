@@ -16,7 +16,7 @@ cd "$WORKINGDIR"
 WORKINGDIR=`pwd`
 cd "$CUR_DIR"
 
-OBJECT_NAME="WinkChannel"
+OBJECT_NAME="HydnaChannel"
 
 DISABLE_WS=false
 DISABLE_FLASH=false
@@ -30,7 +30,7 @@ function usage()
 {
 echo "usage: $0 [options]"
 echo
-echo "This script configures the winkjs library."
+echo "This script configures the hydnajs library."
 echo
 echo "Available options:"
 echo "  -h, --help              Show this message"
