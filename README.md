@@ -96,7 +96,7 @@ message.
 
 #### channel.onclose
 
-Triggered when a channel is closed. `event.data` contains optional reason.
+Triggered when a channel is closed. `event.reason` contains optional reason.
 
     channel.onclose = function(event) {
          alert('the channel was closed: ' + event.data);
