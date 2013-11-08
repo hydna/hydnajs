@@ -10,31 +10,23 @@ package {
 
     private var _id:Number;
     private var _url:Object;
-    private var _followRedirects:Boolean;
-    private var _attempt:Number;
 
     private var _receiveBuffer:ByteArray;
     private var _handshakeBuffer:String;
     private var _userAgent:String;
 
 
-    function Connection(id:Number,
-                        userAgent:String="Unknown",
-                        followRedirects:Boolean=true,
-                        attempt:Number=1) {
+    function Connection(id:Number, userAgent:String="Unknown") {
       super();
 
       _id = id;
       _userAgent = userAgent;
-      _followRedirects = followRedirects;
-      _attempt = attempt;
     }
 
     public function handshake(address:String) : void {
       var url:Object = URLParser.parse(address);
 
       _url = url;
-      _attempt = attempt;
       _handshakeBuffer = "";
 
       this.addEventListener(Event.CONNECT, connectHandler);
@@ -65,7 +57,6 @@ package {
       packet[2] = "Upgrade: winksock/1";
       packet[3] = "Host: " + _url.host;
       packet[4] = "User-Agent: " + _userAgent;
-      packet[5] = "X-Accept-Redirects: " + (_followRedirects ? "yes" : "no");
       packet[6] = "X-SubProtocol: flash";
       packet[7] = "\r\n";
 
@@ -180,16 +171,6 @@ package {
 
     public function get userAgent() : String {
       return _userAgent;
-    }
-
-
-    public function get attempt() : Number {
-      return _attempt;
-    }
-
-
-    public function get followRedirects() : Boolean {
-      return _followRedirects;
     }
 
   }

@@ -188,51 +188,6 @@ package {
           }
           break;
 
-        case 301:
-        case 302:
-
-          dealloc(target);
-
-          if (target.attempt >= 5) {
-            try {
-              ExternalInterface.call(_externalError,
-                                     target.id,
-                                     "Too many redirect attempts");
-            } catch (e:Error) {
-              DEBUG && debug("ExternalInterface error: " + e.message);
-            }
-            return;
-          }
-
-          // Find location header
-          for (var i:Number = 0; i < e.headers.length; i++) {
-            header = URLRequestHeader(header);
-            if (header && header.name == "location") {
-              url = header.value;
-              break;
-            }
-          }
-
-          if (!url) {
-            try {
-              ExternalInterface.call(_externalError,
-                                     target.id,
-                                     "Server sent bad redirect response");
-            } catch (e:Error) {
-              DEBUG && debug("ExternalInterface error: " + e.message);
-            }
-            return;
-          }
-
-
-          target = new Connection(target.id,
-                                  target.userAgent,
-                                  target.followRedirects,
-                                  target.attempt + 1);
-
-          target.handshake(url);
-          break;
-
         default:
 
           dealloc(target);
