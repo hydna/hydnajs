@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Require.js example</title>
+  </head>
+  <body>
+    <p>This example show how to use this library with <a href="http://requirejs.org/">require.js</a>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js"></script>
+    <script>
+      require(['../dist/lib.js'], function (hydna) {
+        var channel = new hydna.Channel("testing.hydna.net", "rw");
+        channel.onopen = function () {
+          this.send("Hello world from requirejs");
+        };
+        channel.onmessage = function (event) {
+          alert(event.data);
+          this.close();
+        };
+      });
+    </script>
+  </body>
+</html>
