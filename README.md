@@ -161,6 +161,8 @@ The following properties exist on instances of `HydnaChannel`:
 * `channel.readyState` Returns the "ready-state" of the channel. It can be
   either one of the following: `HydnaChannel.CONNECTING`, `HydnaChannel.OPEN`,
   `HydnaChannel.CLOSING`, and `HydnaChannel.CLOSED`.
+* `channel.transport` is a string representing the underlying transport for
+   specified channel.
 
 ### Static members
 
