@@ -154,6 +154,7 @@ The optional `message` is sent to the behavior instance.
 
 The following properties exist on instances of `HydnaChannel`:
 
+* `channel.bufferedAmount` The number of bytes of data that have been queued using calls to send() but not yet transmitted to the network (this property is not supported for Comet and Flash transports).
 * `channel.readable` is `true` if channel is readable and `false` if it's not.
 * `channel.writable` is `true` if channel is writable and `false` if it's not.
 * `channel.emitable` is `true` if channel is emitable and `false` if it's not.
