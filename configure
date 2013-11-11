@@ -137,6 +137,7 @@ FILES+=(\"$LIB_DIR/encoding.js\")
 
 FILES+=(\"$LIB_DIR/events.js\")
 FILES+=(\"$LIB_DIR/connection.js\")
+FILES+=(\"$LIB_DIR/channel.js\")
 
 if $DISABLE_WS ; then
   echo "Ignoring websocket transport files..."
@@ -158,7 +159,7 @@ else
   FILES+=(\"$LIB_DIR/comet.js\")
 fi
 
-FILES+=(\"$LIB_DIR/channel.js\")
+FILES+=(\"$LIB_DIR/exports.js\")
 
 BAR=""
 
