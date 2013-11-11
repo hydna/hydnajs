@@ -64,6 +64,9 @@ onmessage, onsignal, onclose, and onerror.
 The appropriate event handler will be invoked whenever an event that
 corresponds to the handler is triggered.
 
+The object also support jQuery-style event binding via `on` and `off`. These methods are chaniable. See `examples/eventhandlers.html` for examples.
+
+
 #### channel.onopen
 
 Invoked when a connection has been established and the requested channel was

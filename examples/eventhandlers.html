@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Require.js example</title>
+  </head>
+  <body>
+    <p>This example show how to use the built-in jquery like event handlers.
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js"></script>
+    <script>
+      require(['../dist/lib.js'], function (hydna) {
+        var channel = new hydna.Channel("testing.hydna.net", "rw");
+
+        channel.on("open", function () {
+          this.send("Hello world");
+        }).on("message", function (event) {
+          alert(event.data);
+        }).on("message", function (event) {
+          alert(event.data + " again");
+          this.close();
+        });
+
+      });
+    </script>
+  </body>
+</html>
