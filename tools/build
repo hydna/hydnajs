@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+var PREAMBLE = "/*\nhydna.js v%s\nCopyright (c) Hydna AB 2010-2013\n\n\
+For more info, please visit https://www.hydna.com\n*/\n";
+
 var path = require("path");
 var existsSync = require("fs").existsSync;
 var readFileSync = require("fs").readFileSync;
@@ -56,13 +59,21 @@ function uglify() {
   var args;
   var cwd;
   var min;
+  var name;
   var sc;
 
   cwd = path.dirname(targetmin);
+  name = path.basename(target);
   min = path.basename(targetmin);
   sc = path.basename(targetsourcemap);
 
-  args = [config.uglify, target, "--output", min, "--source-map", sc];
+  args = [config.uglify,
+          name,
+          "--output", min,
+          "--source-map", sc,
+          "--compress",
+          "--mangle",
+          "--preamble", PREAMBLE.replace('%s', config.VERSION)];
   
   uglify = spawn(process.execPath, args, { cwd: cwd });
   uglify.stderr.on('data', function (data) { process.stderr.write(data); });
