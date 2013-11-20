@@ -140,13 +140,13 @@ package {
       while (buffer.bytesAvailable >= 0x7) {
         size = buffer.readUnsignedShort();
 
-        if (buffer.bytesAvailable < (size - 2)) {
+        if (buffer.bytesAvailable < size) {
           buffer.position -= 2;
           return;
         }
 
         frame = new ByteArray();
-        buffer.readBytes(frame, 0, size - 2);
+        buffer.readBytes(frame, 0, size);
 
         frameEvent = new FrameEvent(frame);
 

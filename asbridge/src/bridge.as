@@ -111,7 +111,7 @@ package {
 
       frame.position = 0;
 
-      conn.writeShort(2 + frame.length);
+      conn.writeShort(frame.length);
       conn.writeBytes(frame);
       conn.flush();
     }
