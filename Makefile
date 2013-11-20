@@ -1,9 +1,9 @@
 CURRENTDIR=$(PWD)
 DIST=$(PWD)/dist
 BUILD=$(PWD)/tools/build
-JS_TARGET=$(DIST)/lib.js
-JSMIN_TARGET=$(DIST)/lib.min.js
-JSSM_TARGET=$(DIST)/lib.map
+JS_TARGET=$(DIST)/hydna.js
+JSMIN_TARGET=$(DIST)/hydna.min.js
+JSSM_TARGET=$(DIST)/hydna.map
 CONFIG=$(PWD)/build/config.json
 ASBRIDGE=$(PWD)/asbridge
 ASBRIDGE_DIST=$(ASBRIDGE)/dist

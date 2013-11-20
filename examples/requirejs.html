@@ -8,7 +8,7 @@
     <p>This example show how to use this library with <a href="http://requirejs.org/">require.js</a>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.9/require.min.js"></script>
     <script>
-      require(['../dist/lib.js'], function (hydna) {
+      require(['../dist/hydna.js'], function (hydna) {
         var channel = new hydna.Channel("testing.hydna.net", "rw");
         channel.onopen = function () {
           this.send("Hello world from requirejs");
