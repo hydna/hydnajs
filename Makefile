@@ -2,6 +2,8 @@ CURRENTDIR=$(PWD)
 DIST=$(PWD)/dist
 BUILD=$(PWD)/tools/build
 JS_TARGET=$(DIST)/lib.js
+JSMIN_TARGET=$(DIST)/lib.min.js
+JSSM_TARGET=$(DIST)/lib.js.map
 CONFIG=$(PWD)/build/config.json
 ASBRIDGE=$(PWD)/asbridge
 ASBRIDGE_DIST=$(ASBRIDGE)/dist
@@ -12,7 +14,7 @@ dist:
 	mkdir -p $(DIST)
 
 lib: dist
-	$(BUILD) $(CONFIG) $(JS_TARGET)
+	$(BUILD) $(CONFIG) $(JS_TARGET) $(JSMIN_TARGET) $(JSSM_TARGET)
 
 flash-bridge: dist
 	make -C $(ASBRIDGE) -f Makefile

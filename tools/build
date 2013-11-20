@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 
+var path = require("path");
 var existsSync = require("fs").existsSync;
 var readFileSync = require("fs").readFileSync;
 var confpath = process.argv[2];
 var target = process.argv[3];
+var targetmin = process.argv[4];
+var targetsourcemap = process.argv[5];
 var contants = [];
 var initialText;
 var config;
@@ -51,12 +54,19 @@ function uglify() {
   var spawn = require("child_process").spawn;
   var uglify;
   var args;
-  args = [config.uglify, "--output", target];
-  uglify = spawn(process.execPath, args);
+  var cwd;
+  var min;
+  var sc;
+
+  cwd = path.dirname(targetmin);
+  min = path.basename(targetmin);
+  sc = path.basename(targetsourcemap);
+
+  args = [config.uglify, target, "--output", min, "--source-map", sc];
+  
+  uglify = spawn(process.execPath, args, { cwd: cwd });
   uglify.stderr.on('data', function (data) { process.stderr.write(data); });
   uglify.on("exit", function(code) { process.exit(code); });
-  uglify.stdin.write(chunks.join(""));
-  uglify.stdin.end();
 }
 
 function plain() {
@@ -65,3 +75,7 @@ function plain() {
 }
 
 plain();
+
+if (targetmin) {
+  uglify();
+}
