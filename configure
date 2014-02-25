@@ -1,7 +1,7 @@
 #!/bin/sh
 
 BUILD_DIR=build
-LIB_DIR=`pwd`/lib
+SRC_DIR=`pwd`/lib
 BUILD_CFG=$BUILD_DIR/config.json
 NODE=`which node`
 UGLIFY=`which uglifyjs`
@@ -141,37 +141,37 @@ fi
 
 FILES=()
 
-FILES+=(\"$LIB_DIR/globals.js\")
-FILES+=(\"$LIB_DIR/base64.js\")
-FILES+=(\"$LIB_DIR/nexttick.js\")
-FILES+=(\"$LIB_DIR/uri.js\")
-FILES+=(\"$LIB_DIR/encoding.js\")
+FILES+=(\"$SRC_DIR/globals.js\")
+FILES+=(\"$SRC_DIR/base64.js\")
+FILES+=(\"$SRC_DIR/nexttick.js\")
+FILES+=(\"$SRC_DIR/uri.js\")
+FILES+=(\"$SRC_DIR/encoding.js\")
 
-FILES+=(\"$LIB_DIR/events.js\")
-FILES+=(\"$LIB_DIR/connection.js\")
-FILES+=(\"$LIB_DIR/channel.js\")
+FILES+=(\"$SRC_DIR/events.js\")
+FILES+=(\"$SRC_DIR/connection.js\")
+FILES+=(\"$SRC_DIR/channel.js\")
 
 if $DISABLE_WS ; then
   echo "Ignoring websocket transport files..."
 else
-  FILES+=(\"$LIB_DIR/websocket.js\")
+  FILES+=(\"$SRC_DIR/websocket.js\")
 fi
 
 
 if $DISABLE_FLASH ; then
   echo "Ignoring flash transport files..."
 else
-  FILES+=(\"$LIB_DIR/flash.js\")
+  FILES+=(\"$SRC_DIR/flash.js\")
 fi
 
 
 if $DISABLE_COMET ; then
   echo "Ignoring comet transport files..."
 else
-  FILES+=(\"$LIB_DIR/comet.js\")
+  FILES+=(\"$SRC_DIR/comet.js\")
 fi
 
-FILES+=(\"$LIB_DIR/exports.js\")
+FILES+=(\"$SRC_DIR/exports.js\")
 
 BAR=""
 
