@@ -1,4 +1,3 @@
-dist/*
 build/*
 asbridge/dist/*
 .DS_Store
