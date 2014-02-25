@@ -16,6 +16,12 @@ Add the following to the head-element of your HTML source:
 
 This library comes with Require.js and CommonJS support. See `examples/requirejs.html` for example.
 
+### Installation via Bower
+
+This package is also available via Bower:
+
+    $ bower install hydna
+
 ## Usage
 
 Open a channel in read/write mode and attach event-handlers that
