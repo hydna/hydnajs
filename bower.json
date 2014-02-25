@@ -1,0 +1,21 @@
+{
+  "name": "hydna",
+  "version": "1.0.0",
+  "main": [
+    "./dist/hydna.js",
+    "./dist/bridge.swf"
+  ],
+  "ignore": [
+    "**/.*",
+    "asbridge",
+    "bin",
+    "cometbridge",
+    "build",
+    "src",
+    "tools",
+    "configure",
+    "Makefile",
+    "VERSION",
+    "examples"
+  ]
+}
