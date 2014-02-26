@@ -107,7 +107,7 @@ var FlashTransport = {
 
     if (!global.document.all) {
       for (var i = 0; i < bridge.childNodes.length; i++) {
-        if (bridge.childNodes[i].nodeName.toUpperCase() == "EMBED") {
+        if (bridge.childNodes[i].nodeName.toUpperCase() === "EMBED") {
           bridge = bridge.childNodes[i];
           break;
         }
@@ -207,7 +207,7 @@ FlashSocket.prototype.init = function () {
     url += ':' + urlobj.port;
   }
 
-  if (urlobj.protocol == 'https') {
+  if (urlobj.protocol === 'https') {
     // Currently no support for HTTPS over flash
     this.errorHandler("FLASH_TLS_ERR");
     return;
@@ -276,7 +276,7 @@ function flashSocketInit(url) {
 }
 
 
-if ((typeof DISABLE_FLASH == "undefined" || DISABLE_FLASH == false) &&
+if ((typeof DISABLE_FLASH === "undefined" || DISABLE_FLASH === false) &&
      hasFlashSupport()) {
   AVAILABLE_TRANSPORTS["flash"] = flashSocketInit;
   DEFAULT_TRANSPORT = DEFAULT_TRANSPORT || "flash";

@@ -12,7 +12,7 @@ var WebSocketTransport = {
 
     if (global.MozWebSocket) {
       WebSocket = global.MozWebSocket;
-    } else if ((binary = ("binaryType" in WebSocket.prototype)) == false) {
+    } else if ((binary = ("binaryType" in WebSocket.prototype)) === false) {
       agent = navigator.userAgent;
       // Detect if we can use ArrayBuffers in transport
       switch (true) {
@@ -48,7 +48,7 @@ function webSocketInit(url) {
 
   urlobj = parseUri(url);
 
-  wsurl = (urlobj.protocol == 'http' ? 'ws://' : 'wss://') + urlobj.host;
+  wsurl = (urlobj.protocol === 'http' ? 'ws://' : 'wss://') + urlobj.host;
   if (urlobj.port) {
     wsurl += ':' + urlobj.port;
   }
@@ -80,14 +80,14 @@ function webSocketInit(url) {
     socket.createFrame = createFrameUtf;
   }
 
-  if ("bufferedAmount" in socket == false) {
+  if ("bufferedAmount" in socket === false) {
     socket.bufferedAmount = 0;
   }
 
   return socket;
 }
 
-if ((typeof DISABLE_WEBSOCKET == "undefined" || DISABLE_WEBSOCKET == false) &&
+if ((typeof DISABLE_WEBSOCKET === "undefined" || DISABLE_WEBSOCKET === false) &&
     (global.WebSocket || global.MozWebSocket)) {
   AVAILABLE_TRANSPORTS["websocket"] = webSocketInit;
   DEFAULT_TRANSPORT = "websocket";

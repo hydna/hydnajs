@@ -10,7 +10,7 @@ function Channel(url, mode, options) {
     throw new Error("bad argument, `url`, expected String");
   }
 
-  if (/^http:\/\/|^https:\/\//.test(url) == false) {
+  if (/^http:\/\/|^https:\/\//.test(url) === false) {
     protocol = /^http/.test(location.protocol) ? location.protocol : 'http:';
     url = protocol + "//" + url;
   }
@@ -44,9 +44,9 @@ function Channel(url, mode, options) {
 
   this.readyState = Channel.CONNECTING;
 
-  this.readable = ((this._mode & READ) == READ);
-  this.writable = ((this._mode & WRITE) == WRITE);
-  this.emitable = ((this._mode & EMIT) == EMIT);
+  this.readable = ((this._mode & READ) === READ);
+  this.writable = ((this._mode & WRITE) === WRITE);
+  this.emitable = ((this._mode & EMIT) === EMIT);
 }
 
 
@@ -57,8 +57,8 @@ Channel.CLOSED = Channel.prototype.CLOSED = 3;
 
 Channel.prototype.extensions = "";
 Channel.prototype.protocol = "";
-Channel.prototype.binaryType = typeof ArrayBuffer == "undefined" ? void(0)
-                                                                 : "arraybuffer";
+Channel.prototype.binaryType = typeof ArrayBuffer === "undefined" ? void(0)
+                                                                  : "arraybuffer";
 
 try {
   Object.defineProperty(Channel.prototype, "bufferedAmount", {
@@ -76,7 +76,7 @@ try {
 Channel.prototype._onopen = function(data) {
   this._token = null;
 
-  if (this.readyState == Channel.CLOSING) {
+  if (this.readyState === Channel.CLOSING) {
     this.channel.send(OP_SIGNAL, FLAG_END, this._endsig);
     this._endsig = null;
     return;
@@ -108,7 +108,7 @@ Channel.prototype._onend = function(err, code, reason) {
   this._endsig = null;
 
   if (err) {
-    event = new ErrorEvent(this, typeof err == "string" ? err : err.message);
+    event = new ErrorEvent(this, typeof err === "string" ? err : err.message);
     dispatchEvent(event);
   }
 
@@ -197,7 +197,7 @@ Channel.prototype.close = function(data) {
     return;
   }
 
-  if (typeof data == 'number') {
+  if (typeof data === 'number') {
     data = arguments[1];
   }
 

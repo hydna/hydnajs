@@ -31,7 +31,7 @@ function getConnection(channel, urlobj, options) {
     }
   }
 
-  if (transport in AVAILABLE_TRANSPORTS == false) {
+  if (transport in AVAILABLE_TRANSPORTS === false) {
     throw new Error("Bad transport '" + transport + "'");
   }
 
@@ -41,7 +41,7 @@ function getConnection(channel, urlobj, options) {
 
   if ((connections = availableConnections[connkey])) {
     for (var i = 0; i < connections.length; i++) {
-      if (path in connections[i].channels == false) {
+      if (path in connections[i].channels === false) {
         connection = connections[i];
         break;
       }
@@ -50,7 +50,7 @@ function getConnection(channel, urlobj, options) {
 
   if (!connection) {
     connection = new Connection(connurl, transport, allowTransportFallback);
-    if (transport in availableConnections == false) {
+    if (transport in availableConnections === false) {
       availableConnections[connkey] = [];
     }
     availableConnections[connkey].push(connection);
@@ -162,8 +162,8 @@ Connection.prototype.bindTransport = function() {
     }
 
     if (code == STATUS_TRANSPORT_FAILURE &&
-        self.connecting == true &&
-        self.allowTransportFallback == true &&
+        self.connecting === true &&
+        self.allowTransportFallback === true &&
         "fallbackTransport" in this &&
         this.fallbackTransport in AVAILABLE_TRANSPORTS) {
       // Try with a fallback socket if available

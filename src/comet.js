@@ -217,7 +217,7 @@ function cometSocketInit(url) {
 }
 
 
-if ((typeof DISABLE_COMET == "undefined" || DISABLE_COMET == false) &&
+if ((typeof DISABLE_COMET === "undefined" || DISABLE_COMET === false) &&
      typeof global.postMessage != "undefined") {
   AVAILABLE_TRANSPORTS["comet"] = cometSocketInit;
   DEFAULT_TRANSPORT = DEFAULT_TRANSPORT || "comet";
