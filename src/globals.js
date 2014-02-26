@@ -25,14 +25,12 @@ var OP_RESOLVE = 0x4;
 // Channel modes
 var READ = 0x01;
 var WRITE = 0x02;
-var READWRITE = 0x03;
 var EMIT = 0x04;
 
 // flags
 var FLAG_ALLOW = 0x0;
 var FLAG_EMIT = 0x0;
 var FLAG_END = 0x1;
-var FLAG_DENY = 0x7;
 var FLAG_ERROR = 0x7;
 
 var ALL_CHANNELS = 0;
@@ -42,22 +40,14 @@ var MODE_RE = /^(r|read){0,1}(w|write){0,1}(?:\+){0,1}(e|emit){0,1}$/i;
 
 // Range 1000-1999 is compatible with WebSocket specification.
 var STATUS_NORMAL_CLOSURE = 1000;
-var STATUS_GOING_AWAY = 1001;
 var STATUS_PROTOCOL_ERROR = 1002;
-var STATUS_UNSUPPORTED_DATA = 1003;
 var STATUS_NO_STATUS_RCVD = 1005;
 var STATUS_ABNORMAL_CLOSURE = 1006;
 var STATUS_INVALID_PAYLOAD = 1007;
-var STATUS_POLICY_VIOLATION = 1008;
-var STATUS_MESSAGE_TOO_BIG = 1009;
-var STATUS_MANDATORY_EXT = 1010;
-var STATUS_INTERNAL_SERVER_ERROR = 1011;
-var STATUS_TLS_HANDSHAKE = 1015;
 
 // Range 5000-5999 is hydna specific
 var STATUS_OPEN_DENIED = 5000;
 var STATUS_SIGNAL = 5001;
-var STATUS_CHANNEL_OPEN = 5002;
 var STATUS_TRANSPORT_FAILURE = 5003;
 
 // Map native types to local scope, if exists
