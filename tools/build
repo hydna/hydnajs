@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var PREAMBLE = "/*\nhydna.js v%s\nCopyright (c) Hydna AB 2010-2013\n\n\
+var PREAMBLE = "/*\nhydna.js v%s\nCopyright (c) Hydna AB 2010-2014\n\n\
 For more info, please visit https://www.hydna.com\n*/\n";
 
 var path = require("path");
