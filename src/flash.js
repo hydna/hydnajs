@@ -73,7 +73,7 @@ var FlashTransport = {
       vars.push(key + "=" + objname + "." + key);
     }
 
-    codebase = "http://fpdownload.macromedia.com/pub/shockwave/cabs/"
+    codebase = "http://fpdownload.macromedia.com/pub/shockwave/cabs/" +
                "flash/swflash.cab#version=9,0,0,0";
 
     pluginpage = "http://www.macromedia.com/go/getflashplayer";

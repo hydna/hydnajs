@@ -50,7 +50,6 @@ function createFrameBin(ptr, op, flag, data) {
   var view;
   var frame;
   var ctype;
-  var b;
 
   ctype = PAYLOAD_TYPE_TEXT;
 

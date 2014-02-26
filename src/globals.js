@@ -78,8 +78,6 @@ if (ArrayBuffer == undefined) {
   atobin = atoab;
 }
 
-var createFrame = null;
-
 var uniqueId = (function () {
   var incr = 1;
   return function (asString) {

@@ -119,7 +119,7 @@ Channel.prototype._onend = function(err, code, reason) {
     message = "Connection to remote closed";
   }
 
-  event = new CloseEvent(this, code,  message || null, !!(err));
+  event = new CloseEvent(this, code,  message || null);
   dispatchEvent(event);
 
   this._path = null;
@@ -150,7 +150,7 @@ Channel.prototype.removeEventListener = function(event, handler) {
 
 
 Channel.prototype.send = function(data, priority) {
-  var flag = (arguments[1] || 0);
+  var flag = (priority || 0);
 
   if (this.readyState !== Channel.OPEN) {
     throw new Error("INVALID_STATE_ERR");
@@ -191,7 +191,6 @@ Channel.prototype.emit = function(data) {
 
 
 Channel.prototype.close = function(data) {
-  var frame;
 
   if (this.readyState !== Channel.CONNECTING &&
       this.readyState !== Channel.OPEN) {

@@ -38,7 +38,7 @@ ErrorEvent.prototype.type = "error";
 
 
 
-function CloseEvent(target, code, reason, hadError) {
+function CloseEvent(target, code, reason) {
   this.target = target;
 
   this.wasClean = code == STATUS_NORMAL_CLOSURE;

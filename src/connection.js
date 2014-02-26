@@ -69,7 +69,6 @@ function connectionKey(connurl, transport) {
 
 function connectionUrl(urlobj) {
   var result;
-  var protocol;
 
   result = [urlobj.protocol, '://', urlobj.host];
 
@@ -201,7 +200,6 @@ Connection.prototype.bindTransport = function() {
 
 Connection.prototype.createChannel = function(channel, path) {
   var channels = this.channels
-  var socket = this.socket;
   var channel;
 
   if (path in channels) {
@@ -305,10 +303,7 @@ Connection.prototype.processData = function(ptr, flag, data) {
 
 Connection.prototype.processSignal = function(ptr, flag, data) {
   var routes = this.routes;
-  var frame;
-  var clone;
   var channel;
-  var event;
 
   switch (flag) {
 
@@ -365,7 +360,6 @@ Connection.prototype.processSignal = function(ptr, flag, data) {
 
 Connection.prototype.processResolve = function(ptr, flag, data) {
   var channel;
-  var frame;
   var path;
 
   if (typeof data !== "string" || data.length == 0) {
