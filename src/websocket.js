@@ -7,11 +7,12 @@ var WebSocketTransport = {
     var WebSocket = global.WebSocket;
     var agent;
     var tmpsock;
+    var binary;
     var m;
 
     if (global.MozWebSocket) {
       WebSocket = global.MozWebSocket;
-    } else if ((binarySupport = ("binaryType" in WebSocket.prototype)) == false) {
+    } else if ((binary = ("binaryType" in WebSocket.prototype)) == false) {
       agent = navigator.userAgent;
       // Detect if we can use ArrayBuffers in transport
       switch (true) {
@@ -19,13 +20,15 @@ var WebSocketTransport = {
         case (!!(m = /Chrome\/(\d+)/.exec(agent))) && (parseInt(m[1]) >= 15):
         case (!!(m = /Firefox\/(\d+)/.exec(agent))) && (parseInt(m[1]) >= 11):
         case (!!(m = /MSIE\s(\d+)/.exec(agent))) && (parseInt(m[1]) >= 10):
-        WebSocketTransport.binarySupport = true;
+        case (!!(m = /Version\/(\d+).+Safari/.exec(agent))) &&
+             (parseInt(m[1]) >= 6):
+        bin = true;
         break;
 
         default:
         try {
           tmpsock = new WebSocket(wsurl);
-          WebSocketTransport.binarySupport = !!(tmpsock.binaryType);
+          binary = !!(tmpsock.binaryType);
           tmpsock.close();
         } catch (e) {
         }
@@ -33,6 +36,7 @@ var WebSocketTransport = {
       }
     }
 
+    WebSocketTransport.binarySupport = binary || false;
     WebSocketTransport.WebSocket = WebSocket;
   }
 };
