@@ -2,8 +2,10 @@
   "name": "hydna",
   "version": "1.0.1",
   "main": [
+    "./dist/bridge.swf",
     "./dist/hydna.js",
-    "./dist/bridge.swf"
+    "./dist/hydna.map",
+    "./dist/hydna.min.js"
   ],
   "ignore": [
     "**/.*",
