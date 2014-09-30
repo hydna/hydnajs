@@ -259,6 +259,7 @@ Connection.prototype.startKeepAliveTimer = function () {
       self.send(0, OP_HEARTBEAT, 0);
     }
   }, 5000);
+  self.send(0, OP_HEARTBEAT, 0);
 };
 
 
