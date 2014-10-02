@@ -6,7 +6,7 @@
 var VERSION='1.0.1';
 var OBJECT_NAME='HydnaChannel';
 var COMET_PATH='/comet/';
-var FLASH_PATH='bridge.swf';
+var FLASH_PATH='//cdnjs.cloudflare.com/ajax/libs/hydna/1.0.1/bridge.swf';
 var DISABLE_WEBSOCKET=false;
 var DISABLE_FLASH=false;
 var DISABLE_COMET=false;
