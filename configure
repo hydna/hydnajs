@@ -64,7 +64,7 @@ case "$OPTARG" in
     echo "Configure for 'cdnjs' environment"
     OBJECT_NAME="HydnaChannel"
     COMET_PATH="/comet/"
-    FLASH_PATH="//cdnjs.cloudflare.com/ajax/libs/hydna/1.0.0/bridge.swf"
+    FLASH_PATH="//cdnjs.cloudflare.com/ajax/libs/hydna/$VERSION/bridge.swf"
    ;;
   "bower" )
     echo "Configure for 'bower' environment"
@@ -72,7 +72,7 @@ case "$OPTARG" in
     COMET_PATH="/comet/"
     FLASH_PATH="bridge.swf"
     ;;
-  * ) 
+  * )
     echo "unknown environment '$OPTARG'"
     exit -1
 esac
