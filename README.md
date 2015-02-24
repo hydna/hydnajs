@@ -12,7 +12,7 @@ The following transports are supported:
 
 Add the following to the head-element of your HTML source:
 
-    <script type="text/javascript" src="http://cdn.hydna.com/1/hydna.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/hydna/1.0.1/hydna.min.js"></script>
 
 This library comes with Require.js and CommonJS support. See `examples/requirejs.html` for example.
 
